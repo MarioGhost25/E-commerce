@@ -1,7 +1,7 @@
 import { regularExps } from "../../../config";
 
 
-export class RegisterUserDto{
+export class CreateUserDto{
 
 
     private constructor(
@@ -10,7 +10,7 @@ export class RegisterUserDto{
         public password:string,
     ){}
 
-    static create(object:{[key:string]:any}):[string?, RegisterUserDto?] {
+    public static create(object:{[ key: string ]: any }):[ string?, CreateUserDto? ] {
         const {name, email, password} = object;
 
         if(!name) return ["Missing Name", undefined];
@@ -19,7 +19,7 @@ export class RegisterUserDto{
         if(!password) return ["Missing Password", undefined];
         if (password.length < 6) return ["Password too short", undefined];  
 
-        return [undefined, new RegisterUserDto(name, email, password)];
+        return [undefined, new CreateUserDto(name, email, password)];
 
     } 
 }

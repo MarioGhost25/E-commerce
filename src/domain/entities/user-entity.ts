@@ -8,22 +8,18 @@ export class UserEntity {
       public password: string,
     ) { }
   
-    static fromObject( object: { [ key: string ]: any; } ) :[string?, UserEntity?] {
+    public static fromObject( object: { [ key: string ]: any; } ): UserEntity {
       const { id, _id, name, email, password } = object;
   
-      if ( !_id && !id ) {
-        return ['Missing id', undefined];
-      }
-  
-      if ( !name ) return['Missing name', undefined];
-      if ( !email ) return['Missing email', undefined];
-      if ( !password ) return ['Missing password', undefined];
+      const userEntity = new UserEntity(
+        _id ? _id : id,
+        name, 
+        email, 
+        password,
+      );
       
-  
-  
-      return  [undefined, new UserEntity( _id || id, name, email, password )];
+      return userEntity;
   
     }
-  
   
   }

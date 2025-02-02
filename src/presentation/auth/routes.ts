@@ -1,6 +1,8 @@
 
 import { Router } from "express";
 import { AuthController } from "./controller";
+import { UserRepositoryImpl } from "../../infrastructure/repositories/user-repository.impl";
+import { MongoUserDatasourceImpl } from "../../infrastructure/datasources/mongo_user-datasource.impl";
 
 
 export class AuthRoutes{
@@ -8,11 +10,17 @@ export class AuthRoutes{
     static get routes(): Router{
 
         const router = Router();
+        
+        const datasource = new MongoUserDatasourceImpl();
+        const userRepository = new UserRepositoryImpl( datasource );
+        const controller = new AuthController( userRepository );
 
-        const controller = new AuthController();
+        console.log('Datasource:', datasource);
+        console.log('Repository:', userRepository);
+        console.log('Controller:', controller);
 
-        router.post('/login', controller.loginUser );
-        router.post('/register', controller.register )
+        // router.post('/login', controller.loginUser );
+        router.post('/register', controller.createUser );
 
 
 

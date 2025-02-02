@@ -6,7 +6,7 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    gmail:{
+    email:{
         type: String,
         required: true,
         unique: true
@@ -19,4 +19,4 @@ const userSchema = new Schema({
     
 })
 
-export const User = mongoose.model('User', userSchema);
+export const UserModel = mongoose.model('User', userSchema);
