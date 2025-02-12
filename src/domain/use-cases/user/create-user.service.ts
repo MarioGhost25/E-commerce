@@ -1,7 +1,5 @@
-import { CreateUserDto } from "../../dtos";
-import { UserEntity } from "../../entities/user-entity";
-import { UserRepository } from "../../repositories/user-repository";
 
+import { CreateUserDto, UserEntity, UserRepository } from "../..";
 
 export interface CreateUserUC {
     execute(dto: CreateUserDto): Promise<UserEntity>

@@ -10,12 +10,9 @@ export class UserRepositoryImpl implements UserRepository{
     createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
         return this.userDataSource.createUser(createUserDto);  
     }
-
-   
-
-    // login(email: string, password: string): Promise<UserEntity> {
-    //     throw new Error("Method not implemented.");
-    // }
+    login(email: string, password: string): Promise<UserEntity> {
+        return this.userDataSource.login(email, password);
+    }
     // findById(id: number): Promise<UserEntity> {
     //     throw new Error("Method not implemented.");
     // }

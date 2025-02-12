@@ -15,11 +15,8 @@ export class AuthRoutes{
         const userRepository = new UserRepositoryImpl( datasource );
         const controller = new AuthController( userRepository );
 
-        console.log('Datasource:', datasource);
-        console.log('Repository:', userRepository);
-        console.log('Controller:', controller);
 
-        // router.post('/login', controller.loginUser );
+        router.post('/login', controller.loginUser );
         router.post('/register', controller.createUser );
 
 
