@@ -1,5 +1,5 @@
 import { ProductModel} from "../../data";
-import { CreateProductDto, ProductDatasource, ProductEntity, UpdateProductDto } from "../../domain";
+import { CreateProductDto, CustomError, ProductDatasource, ProductEntity, UpdateProductDto } from "../../domain";
 
 
 export class MongoProductDatasourceImpl implements ProductDatasource { 
@@ -7,7 +7,7 @@ export class MongoProductDatasourceImpl implements ProductDatasource {
     async createProduct(createProductDto: CreateProductDto) {
         
         const existProduct = await ProductModel.findOne({name: createProductDto.name});
-        if (existProduct) throw new Error('Product already exist');
+        if (existProduct) throw CustomError.badRequest('Product already exist');
 
         try {
 
@@ -22,13 +22,13 @@ export class MongoProductDatasourceImpl implements ProductDatasource {
 
            
         } catch (error) {
-            throw new Error('Error creating user' + error);
+            throw CustomError.internalServer(`${ error }`);
         }
     }
     async updateProduct(updatedProductDto: UpdateProductDto): Promise<ProductEntity> {
 
         const existProduct = await ProductModel.findById(updatedProductDto.id);
-        if (!existProduct) throw new Error('Product not found');
+        if (!existProduct) throw CustomError.badRequest('Product not found');
 
         try {
             const newUpdateProduct = await ProductModel.findByIdAndUpdate(
@@ -36,12 +36,12 @@ export class MongoProductDatasourceImpl implements ProductDatasource {
                 { ...updatedProductDto },
             );
 
-            if (!newUpdateProduct) throw new Error('Error updating product');
+            if (!newUpdateProduct) throw CustomError.notFound('Error updating product');
 
             return ProductEntity.fromObject(newUpdateProduct);  
             
         } catch (error) {
-            throw new Error('Error updating user' + error);
+            throw CustomError.internalServer(`${ error }`);
             
         }
     }
@@ -52,7 +52,7 @@ export class MongoProductDatasourceImpl implements ProductDatasource {
             return allProduts.map(product => ProductEntity.fromObject(product));
             
         } catch (error) {
-            throw new Error('Products not found' + error);
+            throw CustomError.internalServer(`${ error }`);
         }
     }
 

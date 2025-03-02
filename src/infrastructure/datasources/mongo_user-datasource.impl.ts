@@ -1,4 +1,4 @@
-import { CreateUserDto, UserDatasource, UserEntity } from "../../domain";
+import { CreateUserDto, CustomError, UserDatasource, UserEntity } from "../../domain";
 import { UserModel, } from "../../data";
 import { BcryptAdapter, JwtAdapter } from "../../config";
 
@@ -9,7 +9,7 @@ export class MongoUserDatasourceImpl implements UserDatasource {
 
         //* Check if email already exist
         const existUser = await UserModel.findOne({ email: createUserDto.email });
-        if (existUser) throw new Error('Email already exist');
+        if (existUser) throw CustomError.badRequest('Email already exist');
 
         try {
             //* Create user based on CreateUserDto
@@ -21,18 +21,18 @@ export class MongoUserDatasourceImpl implements UserDatasource {
 
             //* Generate token after saving user
             const token = await JwtAdapter.generateToken({ id: user._id });
-            if (!token) throw new Error('Error generating token');
+            if (!token) CustomError.internalServer('Error generating token');
 
             //* Return userEntity not userSchema with token
             const { ...userEntity } = UserEntity.fromObject(user);
 
             return {
-                ...userEntity,
+                 ...userEntity,
                 token: { token },
             }
 
         } catch (error) {
-            throw new Error('Error creating user');
+            throw CustomError.internalServer(`${ error }`);
         }
     }
 
@@ -41,25 +41,16 @@ export class MongoUserDatasourceImpl implements UserDatasource {
         try {
             //* First of all, check if user exist
             const user = await UserModel.findOne({ email: email });
-            if (!user) throw new Error('User not found');
+            if (!user) throw CustomError.notFound('User not found');
 
             //* and Check if password is the same
             const arePasswordsvalid = BcryptAdapter.compare(password, user.password);
-            if (!arePasswordsvalid) throw new Error('Invalid password');
+            if (!arePasswordsvalid) throw CustomError.badRequest('Invalid password');
 
             return UserEntity.fromObject(user);
 
         } catch (error) {
-            throw new Error('Error logging in user');
+            throw CustomError.internalServer(`${ error }`);
         }
     }
-    // findById(id: number): Promise<UserEntity> {
-    //     throw new Error("Method not implemented.");
-    // }
-    // findEmail(email: string): Promise<UserEntity> {
-    //     throw new Error("Method not implemented.");
-    // }
-
-
-
 }

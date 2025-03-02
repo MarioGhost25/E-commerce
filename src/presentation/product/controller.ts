@@ -47,8 +47,8 @@ export class ProductController {
 
     new UpdateProductService(this.productRepository)
     .execute(updateProductDto!)
-    .then((product) => res.json(product))
-    .catch((error) => this.handleError(error, res));
+    .then( product => res.json( product ))
+    .catch( error => this.handleError( error, res ));
 
 
   }
@@ -56,7 +56,7 @@ export class ProductController {
 
     new SearchAllProducts(this.productRepository)
     .execute()
-    .then((product) => res.json(product))
-    .catch((error) => this.handleError(error, res));
+    .then( product => res.json( product ))
+    .catch( error => this.handleError( error, res ));
   }
 }

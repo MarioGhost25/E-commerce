@@ -9,6 +9,13 @@ export class CustomError extends Error {
     ){
       super(message);
     }
+
+    static success(message: string) {
+      return new CustomError(200, message);
+    }
+    static created(message: string) {
+      return new CustomError(201, message);
+    }
   
     static badRequest(message: string) {
       return new CustomError(400, message);

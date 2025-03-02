@@ -13,11 +13,11 @@ const shoppingCartSchema = new mongoose.Schema({
             ref: 'Product',
             required: true
         },
-        quantity: {
+        quantity:{
             type: Number,
             required: true
-        }
+        },
     }]
 })
 
-export const ShoppingCart = mongoose.model('ShoppingCart', shoppingCartSchema);
+export const ShoppingCartModel = mongoose.model('ShoppingCart', shoppingCartSchema);
