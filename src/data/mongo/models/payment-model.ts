@@ -10,25 +10,19 @@ const paymentSchema = new Schema({
         type: String,
         required: true
     },
-    paymentMethod: {
-        type: String,
-        required: true
-    },
     paymentDate: {
         type: Date,
         required: true
     },
+    status: { type: String, enum: ['pending', 'paid', 'failed'], default: 'pending' },
+    stripeSessionId: { type: String },
 
-    user: {
+    userId: {
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
 
-    product: {
-        type: Schema.Types.ObjectId,
-        ref: 'Product',
-    }
 })
 
-export const Payment = mongoose.model('Payment', paymentSchema);
+export const PaymentModel = mongoose.model('Payment', paymentSchema);

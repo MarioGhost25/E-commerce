@@ -6,43 +6,54 @@ export class MongoShoppingCartDatasourceImpl implements ShoppingCartDatasource {
 
     async createShoppingCart(createShoppingCartDto: CreateShoppingCartDto) {
 
-        let shoppingCartExist = await ShoppingCartModel.findOne({ userId: createShoppingCartDto.userId });
+        // Buscamos el carrito de compras por el userId.
+        let shoppingCart = await ShoppingCartModel.findOne({ userId: createShoppingCartDto.userId });
 
         try {
+            // Si el carrito no existe, lo creamos.
+            if (!shoppingCart) {
+                const productsToAdd = createShoppingCartDto.productIds.map(id => ({
+                    productId: id,
+                    quantity: createShoppingCartDto.quantity,
+                }));
 
-            const productId = createShoppingCartDto.productIds.map((id: string) => ({
-                productId: id, // Mongoose lo convierte automáticamente a ObjectId
-                quantity: createShoppingCartDto.quantity, // Asignar la cantidad
-            }));
-
-            // Crear el carrito de compras
-            if (!shoppingCartExist) {
-                shoppingCartExist = new ShoppingCartModel({
-                    userId: createShoppingCartDto.userId, // Mongoose lo convierte automáticamente a ObjectId
-                    products: productId, // Array de productos con la estructura correcta
+                shoppingCart = new ShoppingCartModel({
+                    userId: createShoppingCartDto.userId,
+                    products: productsToAdd,
                 });
-                
+            } else {
+                // Si el carrito ya existe, verificamos que los productos no estén ya añadidos.
+                const incomingProductIds = new Set(createShoppingCartDto.productIds);
+                const existingProductsInCart = shoppingCart.products.filter(p => incomingProductIds.has(p.productId.toString()));
 
+                if (existingProductsInCart.length > 0) {
+                    const existingIds = existingProductsInCart.map(p => p.productId.toString());
+                    throw CustomError.badRequest(`Products with these IDs are already in the cart: ${existingIds.join(', ')}. Please use the update endpoint to change quantity.`);
+                }
+
+                // Si los productos no existen, los añadimos.
+                const productsToAdd = createShoppingCartDto.productIds.map(id => ({
+                    productId: id,
+                    quantity: createShoppingCartDto.quantity,
+                }));
+                shoppingCart.products.push(...productsToAdd);
             }
-            else {
-                // Si el carrito ya existe, se añaden los productos que no estén en el carrito
-                // Filtrar los productos que aún no están en el carrito
-                const newProducts = createShoppingCartDto.productIds.filter(
-                    (productId) => !shoppingCartExist!.products.some(p => p.productId.toString() === productId)
-                  );
-              
-                  // Agregar los nuevos productos al carrito
-                shoppingCartExist.products.push(...newProducts.map(id => ({ productId: id, quantity: createShoppingCartDto.quantity })));
-                
-            }
 
-            await shoppingCartExist.save();
+            // Guardamos los cambios en la base de datos.
+            await shoppingCart.save();
 
-            return ShoppingCart.fromObject(shoppingCartExist);
+            // Retornamos la entidad del carrito de compras.
+            return ShoppingCart.fromObject(shoppingCart);
 
 
         } catch (error) {
-            throw CustomError.internalServer(`${error}`);
+            // Si el error ya es un CustomError, lo relanzamos para que el controlador lo maneje.
+            if (error instanceof CustomError) {
+                throw error;
+            }
+            // Es una buena práctica registrar el error original para depuración.
+            console.error(error); 
+            throw CustomError.internalServer('Error while creating or updating shopping cart');
         }
 
 
