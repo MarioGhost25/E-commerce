@@ -1,5 +1,6 @@
 
 import express, { Router } from 'express';
+import cors from 'cors';
 
 interface Options{
     port: number,
@@ -25,6 +26,12 @@ export class Server{
         this.app.use( express.urlencoded({ extended: true }) );
 
 
+        //* CORS
+        this.app.use(cors({
+            origin: '*',
+            methods: ['GET', 'POST', 'PUT', 'DELETE'],
+            allowedHeaders: ['Content-Type', 'Authorization']
+        }));
         //* gateway routes
         this.app.use(this.routes);
 
