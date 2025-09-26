@@ -13,7 +13,7 @@ export class MongoProductDatasourceImpl implements ProductDatasource {
 
             const product = new ProductModel({
                 ...createProductDto,
-                user: createProductDto.userId
+                user: createProductDto.seller
             });
 
             await product.save();

@@ -1,23 +1,17 @@
-import { CreatePaymentDto, PaymentGatewayRepository, PaymentRepository } from "../..";
+import { PaymentGatewayRepository } from "../..";
+import { LineItem } from "../../../infrastructure/datasources/mongo_stripe-gateway-datasource.impl";
 
 
+export interface CreateCheckoutSessionUseCase {
+    execute(lineItems: LineItem[], currency: string, metadata: { [key: string]: any }): Promise<string>;
+}
 
-
-
-export class CreateCheckoutSessionService {
+export class CreateCheckoutSessionService implements CreateCheckoutSessionUseCase {
     constructor(
         private stripeRepository: PaymentGatewayRepository,
-        private paymentRepository: PaymentRepository
     ) { }
 
-    async execute(createPaymentDto: CreatePaymentDto, amount: number, currency: string): Promise<string> {
-
-        // We can run both promises at the same time for better performance
-        const [sessionId] = await Promise.all([
-            this.stripeRepository.createCheckoutSession(amount, currency),
-            this.paymentRepository.create(createPaymentDto)
-        ]);
-
-        return sessionId;
+    execute(lineItems: LineItem[], currency: string, metadata: { [key: string]: any }): Promise<string> {
+            return this.stripeRepository.createCheckoutSession(lineItems, currency, metadata);
     }
 }

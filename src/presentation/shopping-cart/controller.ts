@@ -17,15 +17,12 @@ export class ShoppingCartController {
         return res.status(500).json({ error: 'Internal server error' });
     };
 
-    createProductOnShoppingCart = async (req: Request, res: Response): Promise<void>=> {
-        
-        const productIds: Array<string> = req.params.id.split(',').filter((id) => id.trim() !== '');
+    createProductOnShoppingCart = async (req: Request, res: Response): Promise<void> => {
 
         const [error, createShoppingCartDto] = CreateShoppingCartDto.create({
-            user: req.body.user.id.toString(),
-            quantity: req.body.quantity,
-            productIds,
-        })
+            ...req.body,
+            user: req.body.user.id,
+        });
 
         if (error) {
             res.status(400).json({ error });
@@ -39,7 +36,17 @@ export class ShoppingCartController {
             this.handleError(error, res);
         }
     }
-    
+
+    getCartByUserId = (req: Request, res: Response) => {
+
+        const { id } = req.body.user;
+
+        this.shoppingCartRepository.getCartByUserId(id)
+            .then(result => res.json(result))
+            .catch(err => this.handleError(err, res));
+
+    }
+
     removeProductOnShoppingCart = (req: Request, res: Response) => {
 
     }

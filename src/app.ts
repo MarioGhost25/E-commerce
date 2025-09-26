@@ -2,6 +2,7 @@ import { MongoDatabase } from './data';
 import { envs } from './config/envs';
 import { Server } from './presentation/server';
 import { AppRoutes } from './presentation/routes';
+import { env } from 'process';
 
 
 ( async () => {
@@ -21,6 +22,8 @@ async function main() {
         routes: AppRoutes.routes,
 
     });
+
+    console.log(process.env)
 
     server.start();
 

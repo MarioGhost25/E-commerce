@@ -16,7 +16,8 @@ export class ShoppingCartRoutes{
         const controller = new ShoppingCartController(shoppingRepository);
 
         
-        router.post('/:id', [AuthMiddleware.validateJWT], controller.createProductOnShoppingCart );
+        router.post('/', [AuthMiddleware.validateJWT], controller.createProductOnShoppingCart );
+        router.get('/:id', controller.getCartByUserId)
         router.delete('/', controller.removeProductOnShoppingCart );
         
         return router;

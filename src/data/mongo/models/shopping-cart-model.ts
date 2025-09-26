@@ -1,23 +1,37 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 
-const shoppingCartSchema = new mongoose.Schema({
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
+const shoppingCartSchema = new Schema({
+    user: {
+        type: Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        required: true,
+        unique: true, // A user should have only one active cart
     },
     products: [{
-        productId: {
-            type: mongoose.Schema.Types.ObjectId,
+        product: {
+            type: Schema.Types.ObjectId,
             ref: 'Product',
-            required: true
+            required: true,
         },
-        quantity:{
+        quantity: {
             type: Number,
-            required: true
+            required: true,
+            min: [1, 'Quantity must be at least 1'],
         },
-    }]
-})
+        // Storing the price when the item is added to the cart
+        price: {
+            type: Number,
+            required: true,
+        },
+    }],
+    status: {
+        type: String,
+        enum: ['active', 'converted', 'abandoned'],
+        default: 'active',
+    }
+}, {
+    timestamps: true,
+});
 
 export const ShoppingCartModel = mongoose.model('ShoppingCart', shoppingCartSchema);

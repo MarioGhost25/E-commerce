@@ -9,6 +9,7 @@ export const envs = {
     MONGO_DB_NAME: get('MONGO_DB_NAME').required().asString(),
     JWT_SEED: get('JWT_SEED').required().asString(),   
     STRIPE_SECRET_KEY: get('STRIPE_SECRET_KEY').required().asString(),
-    // MONGO_USER: get('MONGO_USER').required().asString(),
-    // MONGO_PASSWORD: get('MONGO_PASSWORD').required().asString(),
+    MONGO_USER: get('MONGO_USER').required().asString(),
+    MONGO_PASSWORD: get('MONGO_PASSWORD').required().asString(),
+    WEBSERVICE_URL: get('WEBSERVICE_URL').required().asString(),
 }

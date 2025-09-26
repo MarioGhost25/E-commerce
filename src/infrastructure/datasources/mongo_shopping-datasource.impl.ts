@@ -4,60 +4,61 @@ import { CreateShoppingCartDto, CustomError, ShoppingCart, ShoppingCartDatasourc
 
 export class MongoShoppingCartDatasourceImpl implements ShoppingCartDatasource {
 
+
+
     async createShoppingCart(createShoppingCartDto: CreateShoppingCartDto) {
 
-        // Buscamos el carrito de compras por el userId.
-        let shoppingCart = await ShoppingCartModel.findOne({ userId: createShoppingCartDto.userId });
+        let shoppingCart = await ShoppingCartModel.findOne({
+            userId: createShoppingCartDto.userId
+        });
 
         try {
-            // Si el carrito no existe, lo creamos.
+            // 2. Map the DTO products to the format needed by the model.
+            const productsFromDto = createShoppingCartDto.products.map((item) => ({
+                product: item.product,
+                quantity: item.quantity,
+                price: item.price, // Include the price
+            }));
+            // 3. If the cart doesn't exist, create a new one.
             if (!shoppingCart) {
-                const productsToAdd = createShoppingCartDto.productIds.map(id => ({
-                    productId: id,
-                    quantity: createShoppingCartDto.quantity,
-                }));
-
                 shoppingCart = new ShoppingCartModel({
-                    userId: createShoppingCartDto.userId,
-                    products: productsToAdd,
+                    user: createShoppingCartDto.userId,
+                    products: productsFromDto, // Add the correctly formatted products
                 });
             } else {
-                // Si el carrito ya existe, verificamos que los productos no estén ya añadidos.
-                const incomingProductIds = new Set(createShoppingCartDto.productIds);
-                const existingProductsInCart = shoppingCart.products.filter(p => incomingProductIds.has(p.productId.toString()));
-
+                // 4. If the cart exists, check for duplicate products.
+                const incomingProductIds = new Set(
+                    productsFromDto.map((p) => p.product)
+                );
+                const existingProductsInCart = shoppingCart.products.filter((p) =>
+                    incomingProductIds.has(p.product.toString())
+                );
                 if (existingProductsInCart.length > 0) {
-                    const existingIds = existingProductsInCart.map(p => p.productId.toString());
-                    throw CustomError.badRequest(`Products with these IDs are already in the cart: ${existingIds.join(', ')}. Please use the update endpoint to change quantity.`);
+                    const existingIds = existingProductsInCart.map((p) =>
+                        p.product.toString()
+                    );
+                    throw CustomError.badRequest(
+                        `Products with these IDs are already in the cart: ${existingIds.join(
+                            ", "
+                        )
+                        }. Please use the update endpoint to change quantity.`
+                    );
                 }
-
-                // Si los productos no existen, los añadimos.
-                const productsToAdd = createShoppingCartDto.productIds.map(id => ({
-                    productId: id,
-                    quantity: createShoppingCartDto.quantity,
-                }));
-                shoppingCart.products.push(...productsToAdd);
+                // 5. If no duplicates, add the new products to the existing cart.
+                shoppingCart.products.push(...productsFromDto);
             }
-
-            // Guardamos los cambios en la base de datos.
+            // 6. Save the changes to the database.
             await shoppingCart.save();
-
-            // Retornamos la entidad del carrito de compras.
+            // 7. Return the ShoppingCart entity.
             return ShoppingCart.fromObject(shoppingCart);
-
-
         } catch (error) {
-            // Si el error ya es un CustomError, lo relanzamos para que el controlador lo maneje.
             if (error instanceof CustomError) {
                 throw error;
             }
-            // Es una buena práctica registrar el error original para depuración.
-            console.error(error); 
-            throw CustomError.internalServer('Error while creating or updating shopping cart');
+            throw CustomError.internalServer('Erros while creating or updating the cart');
         }
-
-
     }
+
     updateShoppingCart(): Promise<ShoppingCart> {
         throw new Error("Method not implemented.");
     }
@@ -65,4 +66,21 @@ export class MongoShoppingCartDatasourceImpl implements ShoppingCartDatasource {
         throw new Error("Method not implemented.");
     }
 
+    async getCartByUserId(userId: string): Promise<ShoppingCart> {
+        try {
+            const cart = await ShoppingCartModel.findOne({ user: userId }).populate('products.product');
+    
+            if (!cart) {
+                throw CustomError.notFound('Shopping cart not found for this user.');
+            }
+    
+            return ShoppingCart.fromObject(cart);
+            
+        } catch (error) {
+            if (error instanceof CustomError) {
+                throw error;
+            }
+            throw CustomError.internalServer('Error while getting the shopping cart');
+        }
+    }
 } 
