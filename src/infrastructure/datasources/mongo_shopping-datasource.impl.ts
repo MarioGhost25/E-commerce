@@ -19,11 +19,14 @@ export class MongoShoppingCartDatasourceImpl implements ShoppingCartDatasource {
                 quantity: item.quantity,
                 price: item.price, // Include the price
             }));
+
+            const totalPrice = productsFromDto.reduce((sum: number, item) => sum + (item.price * item.quantity), 0);
             // 3. If the cart doesn't exist, create a new one.
             if (!shoppingCart) {
                 shoppingCart = new ShoppingCartModel({
                     user: createShoppingCartDto.userId,
-                    products: productsFromDto, // Add the correctly formatted products
+                    products: productsFromDto,// Add the correctly formatted products
+                    total: totalPrice 
                 });
             } else {
                 // 4. If the cart exists, check for duplicate products.

@@ -19,7 +19,7 @@ export class AppRoutes {
         //* ShoppingCartController
         router.use('/eco/shopping', ShoppingCartRoutes.routes );
         //* PaymentController
-        router.use('eco/payment', PaymentRoutes.routes)
+        router.use('/eco/payment', PaymentRoutes.routes)
 
         return router;
     }

@@ -20,11 +20,9 @@ export class ShoppingCart {
     public readonly total: number,
   ) { }
 
-  /**
-   * Creates a ShoppingCart entity from a database object.
-   * This method is crucial for mapping the Mongoose model to our domain entity.
-   */
+
   public static fromObject(object: { [key: string]: any; }): ShoppingCart {
+
     const { _id, id, user, products = [], total = 0 } = object;
 
     // The 'products.product' field is populated by Mongoose, so we map it here.

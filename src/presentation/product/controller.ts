@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { CreateProductDto, CreateProductService, CustomError, ProductRepository, SearchAllProducts, UpdateProductDto, UpdateProductService } from "../../domain";
-import { Types } from "mongoose";
+
 
 
 
@@ -23,8 +23,10 @@ export class ProductController {
   createProduct = async (req: Request, res: Response): Promise<void> => {
     const [error, createProductDto] = CreateProductDto.createProduct({
       ...req.body,
-      user: req.body.user.id.toString(),
+      user: req.body.user.id, 
+     
     });
+ 
 
     if (error) {
       res.status(400).json({ error });

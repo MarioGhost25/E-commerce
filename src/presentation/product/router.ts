@@ -2,6 +2,7 @@ import { Router } from "express";
 import { ProductController } from "./controller";
 import { AuthMiddleware } from "../middleware/auth.middleware";
 import { MongoProductDatasourceImpl } from "../../infrastructure/datasources/mongo_product-datasource.impl";
+
 import { ProductRepositoryImpl } from "../../infrastructure/repositories/product-repositort.impl";
 
 

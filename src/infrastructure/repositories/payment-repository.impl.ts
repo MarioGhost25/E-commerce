@@ -6,11 +6,15 @@ export class PaymentRepositoryImpl implements PaymentRepository{
         private readonly paymentDatasource : PaymentDatasource, 
     ) { }
     createPayment(createPaymentDto: CreatePaymentDto): Promise<PaymentEntity> {
-       return this.paymentDatasource.create(createPaymentDto);
+        return this.paymentDatasource.createPayment(createPaymentDto);
     }
-    findByOrderId(orderId: string): Promise<PaymentEntity> {
-        return this.paymentDatasource.findByOrderId(orderId);
+    confirmPayment(dto: { gatewayPaymentId: string; paymentMethodId?: string; }): Promise<PaymentEntity> {
+        throw new Error("Method not implemented.");
     }
+    getPaymentStatus(paymentIntentId: string): Promise<PaymentEntity> {
+        throw new Error("Method not implemented.");
+    }
+    
 
     
 }

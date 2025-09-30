@@ -23,7 +23,6 @@ async function main() {
 
     });
 
-    console.log(process.env)
 
     server.start();
 

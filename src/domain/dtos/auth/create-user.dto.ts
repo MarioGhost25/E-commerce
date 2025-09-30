@@ -35,6 +35,7 @@ export class CreateUserDto {
         if (!name) return ["Missing name", undefined];
         if (!email) return ["Missing email", undefined];
         if (!password) return ["Missing password", undefined];
+        if (!contactPhone) return ["Missing contact phone", undefined];
 
         // 2. Format and Length Validation
         if (typeof name !== 'string') return ["Name must be a string", undefined];

@@ -1,50 +1,43 @@
 
 
+export enum PaymentStatus {
+  Pending = 'pending',
+  RequiresAction = 'requires_action', // SCA
+  Succeeded = 'succeeded',
+  Failed = 'failed',
+  Canceled = 'canceled'
+}
+
+export type Currency = string; // 'usd', 'eur', etc.
+
 export class PaymentEntity {
+  
 
   constructor(
-    public readonly id: string,
-    public readonly user: string,       // User ID
-    public readonly order: string,       // Order ID
-    public readonly amount: number,
-    public readonly currency: string,
-    public readonly stripePaymentIntentId: string,
-    public readonly status: string,       // e.g., 'succeeded', 'pending', 'failed'
-    public readonly createdAt: Date,
-) { }
+    public id: string,
+    public amount: number,
+    public currency: Currency,
+    public paymentIntentId: string,
+    public user: string,
+    public status?: PaymentStatus,
+    public metadata?: Record<string,string>,
+  ) {}
 
-public static fromObject(object: { [key: string]: any }): PaymentEntity {
-    const {
-        _id, id,
-        user,
-        order,
-        amount,
-        currency,
-        stripePaymentIntentId,
-        status = 'succeeded', // Default to succeeded as we only save on success
-        createdAt,
-    } = object;
 
-    if (!_id && !id) {
-        throw new Error('Missing ID');
-    }
+  public static fromObject(object: { [key: string]: any}): PaymentEntity {
+    const {id, user, amount, status, paymentIntentId, metadata, currency } = object;
 
-    if (!user) throw new Error('Missing user ID');
-    if (!order) throw new Error('Missing order ID');
-    if (amount === undefined) throw new Error('Missing amount');
-    if (!currency) throw new Error('Missing currency');
-    if (!stripePaymentIntentId) throw new Error('Missing Stripe Payment Intent ID');
+    const paymentEntity = new PaymentEntity (
+      id,
+      user,
+      amount,
+      currency,
+      status,
+      paymentIntentId,
+      metadata,
 
-    return new PaymentEntity(
-        _id || id,
-        user,
-        order,
-        amount,
-        currency,
-        stripePaymentIntentId,
-        status,
-        createdAt
-    );
-}
-  
+    )
+
+    return paymentEntity;
   }
+}

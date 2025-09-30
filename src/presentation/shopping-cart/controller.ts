@@ -38,6 +38,7 @@ export class ShoppingCartController {
     }
 
     getCartByUserId = (req: Request, res: Response) => {
+        console.log(req.body.user);
 
         const { id } = req.body.user;
 
@@ -48,6 +49,8 @@ export class ShoppingCartController {
     }
 
     removeProductOnShoppingCart = (req: Request, res: Response) => {
+        // * TODO
+
 
     }
 }

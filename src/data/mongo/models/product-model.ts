@@ -37,7 +37,7 @@ const productSchema = new Schema({
         type: String, // Array of image URLs
     }],
     // Renamed for clarity
-    seller: {
+    user: {
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true,

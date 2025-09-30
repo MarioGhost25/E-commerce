@@ -23,8 +23,6 @@ export class Server{
     async start(){
         
 
-        this.app.use( express.raw({ type: 'application/json' }));
-
         this.app.use( express.json() );
         this.app.use( express.urlencoded({ extended: true }) );
 
