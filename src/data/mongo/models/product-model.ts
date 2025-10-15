@@ -28,10 +28,20 @@ const productSchema = new Schema({
         // type: Schema.Types.ObjectId, 
         // ref: 'Category'
     },
+    status:{
+        type: String,
+        enum: ['In stock', 'Low Stock' ,'Out of Stock'],
+        default: 'Out of Stock',
+
+    },
     stock: {
         type: Number,
         required: true,
         min: [0, 'Stock cannot be negative'],
+    },
+    isActive:{
+        type: Boolean,
+        default: false,
     },
     images: [{
         type: String, // Array of image URLs

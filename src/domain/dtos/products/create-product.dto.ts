@@ -9,6 +9,7 @@ export class CreateProductDto {
         public readonly category: string,
         public readonly stock: number,
         public readonly user: string, // Changed from userId to seller
+        public readonly status: string,
         public readonly sku?: string,
         public readonly images?: string[],
     ) {}
@@ -22,6 +23,7 @@ export class CreateProductDto {
             stock,
             user,
             sku,
+            status,
             images,
         } = object;
 
@@ -38,9 +40,9 @@ export class CreateProductDto {
 
         // 2. Type and Value Validation
         if (typeof name !== 'string') return ["Name must be a string", undefined];
-        if (typeof sku !== 'string') return ["SKU must be a string", undefined];
         if (typeof description !== 'string') return ["Description must be a string", undefined];
         if (typeof category !== 'string') return ["Category must be a string", undefined];
+        if (typeof status !== 'string') return ["Status must be a string", undefined];
 
         if (typeof newPrice !== 'number' || newPrice < 0) {
             return ["Price must be a non-negative number", undefined];

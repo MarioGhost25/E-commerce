@@ -47,7 +47,15 @@ export class MongoUserDatasourceImpl implements UserDatasource {
             const arePasswordsvalid = BcryptAdapter.compare(password, user.password);
             if (!arePasswordsvalid) throw CustomError.badRequest('Invalid password');
 
-            return UserEntity.fromObject(user);
+            const token = await JwtAdapter.generateToken({ id: user._id });
+            if (!token) CustomError.internalServer('Error generating token');
+
+            const { ...userEntity } = UserEntity.fromObject(user);
+
+            return {
+                 ...userEntity,
+                token: { token },
+            }
 
         } catch (error) {
             throw CustomError.internalServer(`${ error }`);

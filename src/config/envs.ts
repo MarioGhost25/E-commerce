@@ -11,5 +11,5 @@ export const envs = {
     STRIPE_SECRET_KEY: get('STRIPE_SECRET_KEY').required().asString(),
     MONGO_USER: get('MONGO_USER').required().asString(),
     MONGO_PASSWORD: get('MONGO_PASSWORD').required().asString(),
-    WEBSERVICE_URL: get('WEBSERVICE_URL').required().asString(),
+    
 }

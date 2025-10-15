@@ -7,10 +7,11 @@ export class UserEntity {
       public email: string,
       public password: string,
       public contactPhone: string,
+      public role: string
     ) { }
   
     public static fromObject( object: { [ key: string ]: any; } ): UserEntity {
-      const { id, _id, name, email, password, contactPhone } = object;
+      const { id, _id, name, email, password, contactPhone, role } = object;
   
       const userEntity = new UserEntity(
         _id ? _id : id,
@@ -18,7 +19,7 @@ export class UserEntity {
         email, 
         password,
         contactPhone,
-
+        role,
       );
       
       return userEntity;
