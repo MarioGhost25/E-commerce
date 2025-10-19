@@ -1,8 +1,9 @@
 import { CreateProductDto, ProductEntity, UpdateProductDto } from "..";
 
 
-export abstract class ProductDatasource{
+export abstract class ProductDatasource {
     abstract createProduct(createProductDto: CreateProductDto): Promise<ProductEntity>;
     abstract updateProduct(updatedProductDto: UpdateProductDto): Promise<ProductEntity>;
+    abstract deleteProduct(productId: string): Promise<ProductEntity>;
     abstract searchAll(): Promise<ProductEntity[]>;
 }

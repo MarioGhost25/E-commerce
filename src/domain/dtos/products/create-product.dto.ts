@@ -1,5 +1,9 @@
 import { Types } from 'mongoose';
 
+// Tipo literal para status válidos
+export type StockStatus = 'In stock' | 'Low Stock' | 'Out of Stock';
+export const validStatus: StockStatus[] = ['In stock', 'Low Stock', 'Out of Stock'];
+
 export class CreateProductDto {
 
     private constructor(
@@ -8,11 +12,12 @@ export class CreateProductDto {
         public readonly description: string,
         public readonly category: string,
         public readonly stock: number,
-        public readonly user: string, // Changed from userId to seller
-        public readonly status: string,
+        public readonly user: string,
+        public readonly stockStatus: StockStatus,
+        public readonly isActive?: boolean,
         public readonly sku?: string,
         public readonly images?: string[],
-    ) {}
+    ) { }
 
     public static createProduct(object: { [key: string]: any }): [string?, CreateProductDto?] {
         const {
@@ -22,8 +27,9 @@ export class CreateProductDto {
             category,
             stock,
             user,
+            stockStatus,
+            isActive,
             sku,
-            status,
             images,
         } = object;
 
@@ -35,14 +41,22 @@ export class CreateProductDto {
         if (newPrice === undefined) return ["Missing price", undefined];
         if (!description) return ["Missing description", undefined];
         if (!category) return ["Missing category", undefined];
-        if (stock === undefined) return ["Missing stock", undefined];
+        if (stockNumber === undefined) return ["Missing stock", undefined];
         if (!user) return ["Missing seller ID", undefined];
+        if (!validStatus.includes(stockStatus)) {
+            return ["Invalid stock status", undefined];
+        }
 
         // 2. Type and Value Validation
         if (typeof name !== 'string') return ["Name must be a string", undefined];
         if (typeof description !== 'string') return ["Description must be a string", undefined];
         if (typeof category !== 'string') return ["Category must be a string", undefined];
-        if (typeof status !== 'string') return ["Status must be a string", undefined];
+        if (typeof stockStatus !== 'string') {
+            // Normaliza el valor recibido (por si viene null, undefined o string incorrecto)
+            if (!validStatus.includes(stockStatus)) {
+                return ["Invalid stock status", undefined];
+            }
+        }
 
         if (typeof newPrice !== 'number' || newPrice < 0) {
             return ["Price must be a non-negative number", undefined];
@@ -65,13 +79,15 @@ export class CreateProductDto {
 
         return [undefined, new CreateProductDto(
             name,
-            price,
+            newPrice,
             description,
             category,
-            stock,
+            stockNumber,
             user,
+            stockStatus,
+            isActive,
             sku,
-            images
+            images,
         )];
     }
 }

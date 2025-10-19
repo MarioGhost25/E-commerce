@@ -1,9 +1,6 @@
 import { Request, Response } from "express";
 import { CreateProductDto, CreateProductService, CustomError, ProductRepository, SearchAllProducts, UpdateProductDto, UpdateProductService } from "../../domain";
-
-
-
-
+import { DeleteProductDto } from "../../domain/dtos/products/delete-product.dto";
 
 export class ProductController {
 
@@ -53,6 +50,24 @@ export class ProductController {
     .catch( error => this.handleError( error, res ));
 
 
+  }
+  deleteProduct = async (req: Request, res: Response): Promise<any> => {
+    const id = req.params.id;
+    const [error, dto] = DeleteProductDto.create({ id });
+    if (error) return res.status(400).json({ error });
+
+    try {
+      const deleted = await this.productRepository.deleteProduct(dto!.id);
+
+      if (!deleted) {
+        return res.status(404).json({ error: 'Product not found' });
+      }
+
+      // Devolver la entidad eliminada (200). Si prefieres no cuerpo, usa 204 y .send()
+      return res.status(200).json(deleted);
+    } catch (err) {
+      return this.handleError(err, res);
+    }
   }
   search = (req: Request, res: Response): any => {
 

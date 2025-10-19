@@ -9,9 +9,9 @@ export class MongoProductDatasourceImpl implements ProductDatasource {
         
         const existProduct = await ProductModel.findOne({name: createProductDto.name});
         if (existProduct) throw CustomError.badRequest('Product already exist');
-
+        
         const sku = this.generateSKU(createProductDto);
-
+        
         try {
 
             const product = new ProductModel({
@@ -19,7 +19,7 @@ export class MongoProductDatasourceImpl implements ProductDatasource {
                 user: createProductDto.user,
                 sku,
             });
-
+            
             await product.save();
             
             return ProductEntity.fromObject(product);
@@ -33,16 +33,16 @@ export class MongoProductDatasourceImpl implements ProductDatasource {
         
         const existProduct = await ProductModel.findById(updatedProductDto.id);
         if (!existProduct) throw CustomError.badRequest('Product not found');
-
+        
         const sku = this.generateSKU(updatedProductDto);
-
-    
+        
+        
         try {
             const newUpdateProduct = await ProductModel.findByIdAndUpdate(
                 updatedProductDto.id,
                 { ...updatedProductDto, sku },
             );
-
+            
             if (!newUpdateProduct) throw CustomError.notFound('Error updating product');
             
             return ProductEntity.fromObject(newUpdateProduct);  
@@ -52,12 +52,17 @@ export class MongoProductDatasourceImpl implements ProductDatasource {
             
         }
     }
+    
+    async deleteProduct(productId: string): Promise<ProductEntity> {
+        const item = await ProductModel.findByIdAndDelete(productId);
+        if (!item) throw CustomError.notFound('Product not found');
+        return ProductEntity.fromObject(item);
+    }
     async searchAll(): Promise<ProductEntity[]>{
         
         try {
-            const allProduts = await ProductModel.find({})
-            return allProduts.map(product => ProductEntity.fromObject(product));
-            
+            const allProducts = await ProductModel.find({})
+            return allProducts.map(product => ProductEntity.fromObject(product));
         } catch (error) {
             throw CustomError.internalServer(`${ error }`);
         }

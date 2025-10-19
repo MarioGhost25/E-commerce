@@ -15,9 +15,10 @@ export * from './use-cases/user/login-user.service';
 export * from './use-cases/product/create-product.service';
 export * from './use-cases/product/update-product.service';
 export * from './use-cases/product/searchAll-products.service';
+export * from './use-cases/product/delete-product.service';
 export * from './use-cases/shopping-cart/create-shopping-cart.service';
 export * from './use-cases/shopping-cart/getById-shopping-cart.service';
-export * from './use-cases/payment/create-payment.service'
+export * from './use-cases/payment/create-payment.service';
 
 
 

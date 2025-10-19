@@ -28,7 +28,7 @@ const productSchema = new Schema({
         // type: Schema.Types.ObjectId, 
         // ref: 'Category'
     },
-    status:{
+    stockStatus:{
         type: String,
         enum: ['In stock', 'Low Stock' ,'Out of Stock'],
         default: 'Out of Stock',
