@@ -1,8 +1,8 @@
 import { Types } from 'mongoose';
 
 // Tipo literal para status válidos
-export type StockStatus = 'In stock' | 'Low Stock' | 'Out of Stock';
-export const validStatus: StockStatus[] = ['In stock', 'Low Stock', 'Out of Stock'];
+export type StockStatus = 'In Stock' | 'Low Stock' | 'Out of Stock';
+export const validStatus: StockStatus[] = ['In Stock', 'Low Stock', 'Out of Stock'];
 
 export class CreateProductDto {
 
