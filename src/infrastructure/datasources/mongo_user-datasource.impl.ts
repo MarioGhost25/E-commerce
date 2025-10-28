@@ -5,6 +5,13 @@ import { BcryptAdapter, JwtAdapter } from "../../config";
 
 export class MongoUserDatasourceImpl implements UserDatasource {
 
+    async getUserById(userId: string) {
+        const user = await UserModel.findById(userId);
+        if (!user) throw CustomError.notFound('User not found');
+
+        return UserEntity.fromObject(user);
+    }
+
     async createUser(createUserDto: CreateUserDto) {
 
         //* Check if email already exist
@@ -27,12 +34,12 @@ export class MongoUserDatasourceImpl implements UserDatasource {
             const { ...userEntity } = UserEntity.fromObject(user);
 
             return {
-                 ...userEntity,
+                ...userEntity,
                 token: { token },
             }
 
         } catch (error) {
-            throw CustomError.internalServer(`${ error }`);
+            throw CustomError.internalServer(`${error}`);
         }
     }
 
@@ -53,12 +60,31 @@ export class MongoUserDatasourceImpl implements UserDatasource {
             const { ...userEntity } = UserEntity.fromObject(user);
 
             return {
-                 ...userEntity,
+                ...userEntity,
                 token: { token },
             }
 
         } catch (error) {
-            throw CustomError.internalServer(`${ error }`);
+            throw CustomError.internalServer(`${error}`);
+        }
+    }
+
+    async updatePassword(userId: string, newPassword: string) {
+
+        try {
+            const user = await UserModel.findById(userId);
+            if (!user) throw CustomError.notFound('User not found');
+
+            const isSamePassword = BcryptAdapter.compare(newPassword, user.password);
+            if (isSamePassword) throw CustomError.badRequest('New password must be different from the old one');
+
+            user.password = BcryptAdapter.hash(newPassword);
+            await user.save();
+
+            return UserEntity.fromObject(user);
+        } catch (error) {
+            throw CustomError.internalServer(`${error}`);
+
         }
     }
 }

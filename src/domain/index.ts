@@ -2,6 +2,8 @@
 //* DTOs
 export * from './dtos/auth/create-user.dto';
 export * from './dtos/auth/login-user.dto';
+export * from './dtos/auth/get-user.dto';
+export * from './dtos/auth/update-password.dto';
 export * from './dtos/products/create-product.dto';
 export * from './dtos/products/update-product.dto';
 export * from './dtos/shopping-cart/create-shoppingC.dto';
@@ -12,6 +14,8 @@ export * from './errors/custom.error';
 //* Use Cases
 export * from './use-cases/user/create-user.service';
 export * from './use-cases/user/login-user.service';
+export * from './use-cases/user/get-user.service';
+export * from './use-cases/user/update-password.service';
 export * from './use-cases/product/create-product.service';
 export * from './use-cases/product/update-product.service';
 export * from './use-cases/product/searchAll-products.service';
