@@ -35,7 +35,6 @@ export class CreateUserDto {
         if (!name) return ["Missing name", undefined];
         if (!email) return ["Missing email", undefined];
         if (!password) return ["Missing password", undefined];
-        if (!contactPhone) return ["Missing contact phone", undefined];
 
         // 2. Format and Length Validation
         if (typeof name !== 'string') return ["Name must be a string", undefined];
@@ -51,10 +50,6 @@ export class CreateUserDto {
             if (role !== 'admin' && role !== 'user') {
                 return ["Invalid role. Must be 'admin' or 'user'", undefined];
             }
-        }
-
-        if (contactPhone) {
-             if (typeof contactPhone !== 'string') return ["Contact phone must be a string", undefined];
         }
 
         if (shippingAddresses) {

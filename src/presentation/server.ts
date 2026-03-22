@@ -1,6 +1,8 @@
 
 import express, { Router } from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import { envs } from '../config/envs';
 
 interface Options{
     port: number,
@@ -23,13 +25,19 @@ export class Server{
     async start(){
         
 
-        this.app.use( express.json() );
-        this.app.use( express.urlencoded({ extended: true }) );
+        this.app.use( express.json({limit: '10mb'}) );
+        this.app.use( express.urlencoded({ extended: true, limit: '10mb' }) );
+        this.app.use(cookieParser());
 
 
         //* CORS
+        const allowedOrigins = envs.CORS_ORIGIN
+            ? envs.CORS_ORIGIN.split(',').map(o => o.trim()).filter(Boolean)
+            : [];
+
         this.app.use(cors({
-            origin: '*',
+            origin: allowedOrigins.length ? allowedOrigins : true,
+            credentials: true,
             methods: ['GET', 'POST', 'PUT', 'DELETE'],
             allowedHeaders: ['Content-Type', 'Authorization']
         }));

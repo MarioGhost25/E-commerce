@@ -4,28 +4,32 @@ export class ProductEntity {
     constructor(
         public id: string,
         public name: string,
+        public description: string,
         public price: number,
-        public category: string,
-        public status: string,
-        public stock: number,
         public sku: string,
-        public isActive: boolean,
+        public category: string,
+        public stock: number,
         public stockStatus: string,
+        public isActive: boolean,
+        public rating: number,
+        public images: string[],
     ) { }
   
     public static fromObject( object: { [ key: string ]: any; } ): ProductEntity {
-      const { id, name, price, category, status, stock, sku, isActive, stockStatus } = object;
+      const { id, name, description, price, category, stock, sku, isActive, stockStatus,rating, images} = object;
   
       const userEntity = new ProductEntity(
         id, 
         name, 
+        description,
         price, 
-        category,
-        status,
-        stock,
         sku,
-        isActive,
+        category,
+        stock,
         stockStatus,
+        isActive,
+        rating,
+        images,
       );
       
       return userEntity;

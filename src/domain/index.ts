@@ -9,6 +9,7 @@ export * from './dtos/products/update-product.dto';
 export * from './dtos/shopping-cart/create-shoppingC.dto';
 export * from './dtos/payment/create-payment.dto';
 export * from './errors/custom.error';
+export * from './dtos/image/upload-image.dto';
 
 
 //* Use Cases
@@ -23,6 +24,7 @@ export * from './use-cases/product/delete-product.service';
 export * from './use-cases/shopping-cart/create-shopping-cart.service';
 export * from './use-cases/shopping-cart/getById-shopping-cart.service';
 export * from './use-cases/payment/create-payment.service';
+export * from './use-cases/image/upload-image.service';
 
 
 
@@ -39,7 +41,12 @@ export * from './datasources/shopping-cart-datasource';
 //payment
 export * from './repositories/payment-repository';
 export * from './datasources/payment-datasource';
-
+//image
+export * from './repositories/image-repository';
+export * from './datasources/image-datasource';
+//refresh token
+export * from './repositories/refresh-token-repository';
+export * from './datasources/refresh-token-datasource';
 
 
 
@@ -49,3 +56,5 @@ export * from './entities/user-entity';
 export * from './entities/product-entity';
 export * from './entities/shoppingCart-entity';
 export * from './entities/payment-entity';
+export * from './entities/image-entity';
+export * from './entities/refresh-token-entity';

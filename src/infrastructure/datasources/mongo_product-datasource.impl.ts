@@ -29,7 +29,7 @@ export class MongoProductDatasourceImpl implements ProductDatasource {
             throw CustomError.internalServer(`${ error }`);
         }
     }
-    async updateProduct(updatedProductDto: UpdateProductDto): Promise<ProductEntity> {
+    async updateProduct(updatedProductDto: UpdateProductDto) {
         
         const existProduct = await ProductModel.findById(updatedProductDto.id);
         if (!existProduct) throw CustomError.badRequest('Product not found');
@@ -53,12 +53,12 @@ export class MongoProductDatasourceImpl implements ProductDatasource {
         }
     }
     
-    async deleteProduct(productId: string): Promise<ProductEntity> {
+    async deleteProduct(productId: string) {
         const item = await ProductModel.findByIdAndDelete(productId);
         if (!item) throw CustomError.notFound('Product not found');
         return ProductEntity.fromObject(item);
     }
-    async searchAll(): Promise<ProductEntity[]>{
+    async searchAll(){
         
         try {
             const allProducts = await ProductModel.find({})

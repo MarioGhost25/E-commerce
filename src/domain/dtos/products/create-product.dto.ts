@@ -15,7 +15,7 @@ export class CreateProductDto {
         public readonly user: string,
         public readonly stockStatus: StockStatus,
         public readonly isActive?: boolean,
-        public readonly sku?: string,
+        public readonly rating?: number,
         public readonly images?: string[],
     ) { }
 
@@ -29,7 +29,7 @@ export class CreateProductDto {
             user,
             stockStatus,
             isActive,
-            sku,
+            rating,
             images,
         } = object;
 
@@ -86,7 +86,7 @@ export class CreateProductDto {
             user,
             stockStatus,
             isActive,
-            sku,
+            rating,
             images,
         )];
     }

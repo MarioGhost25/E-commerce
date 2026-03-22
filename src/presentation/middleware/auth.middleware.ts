@@ -30,7 +30,7 @@ export class AuthMiddleware {
     const token = authorization.split(' ').at(1) || '';
 
     try {
-      const payload = await JwtAdapter.validateToken<{ id: string }>(token);
+      const payload = await JwtAdapter.validateAccessToken<{ id: string }>(token);
       if (!payload) {
         res.status(401).json({ error: 'Invalid token' });
         return; 
@@ -43,7 +43,9 @@ export class AuthMiddleware {
       }
 
       // Asigna el usuario autenticado a `req.user`
-      req.body.user = UserEntity.fromObject(user);
+      const userEntity = UserEntity.fromObject(user);
+      req.user = userEntity;
+      req.body.user = userEntity;
 
       // Pasa al siguiente middleware o ruta
       next();

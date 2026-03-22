@@ -1,6 +1,6 @@
 import { CreateUserDto, CustomError, UserDatasource, UserEntity } from "../../domain";
-import { UserModel, } from "../../data";
-import { BcryptAdapter, JwtAdapter } from "../../config";
+import { UserModel } from "../../data";
+import { BcryptAdapter } from "../../config";
 
 
 export class MongoUserDatasourceImpl implements UserDatasource {
@@ -26,17 +26,9 @@ export class MongoUserDatasourceImpl implements UserDatasource {
             user.password = BcryptAdapter.hash(createUserDto.password);
             await user.save();
 
-            //* Generate token after saving user
-            const token = await JwtAdapter.generateToken({ id: user._id });
-            if (!token) CustomError.internalServer('Error generating token');
-
             //* Return userEntity not userSchema with token
-            const { ...userEntity } = UserEntity.fromObject(user);
-
-            return {
-                ...userEntity,
-                token: { token },
-            }
+            const userEntity = UserEntity.fromObject(user);
+            return userEntity;
 
         } catch (error) {
             throw CustomError.internalServer(`${error}`);
@@ -54,15 +46,8 @@ export class MongoUserDatasourceImpl implements UserDatasource {
             const arePasswordsvalid = BcryptAdapter.compare(password, user.password);
             if (!arePasswordsvalid) throw CustomError.badRequest('Invalid password');
 
-            const token = await JwtAdapter.generateToken({ id: user._id });
-            if (!token) CustomError.internalServer('Error generating token');
-
-            const { ...userEntity } = UserEntity.fromObject(user);
-
-            return {
-                ...userEntity,
-                token: { token },
-            }
+            const userEntity = UserEntity.fromObject(user);
+            return userEntity;
 
         } catch (error) {
             throw CustomError.internalServer(`${error}`);
@@ -82,6 +67,7 @@ export class MongoUserDatasourceImpl implements UserDatasource {
             await user.save();
 
             return UserEntity.fromObject(user);
+            
         } catch (error) {
             throw CustomError.internalServer(`${error}`);
 

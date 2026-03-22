@@ -7,11 +7,6 @@ const productSchema = new Schema({
         required: true,
         trim: true, // Removes whitespace from both ends
     },
-    sku: {
-        type: String,
-        required: true,
-        unique: true, // Stock Keeping Unit
-    },
     description: {
         type: String,
         required: true,
@@ -21,6 +16,11 @@ const productSchema = new Schema({
         required: true,
         min: [0, 'Price cannot be negative'],
     },
+    sku: {
+        type: String,
+        required: [true, 'SKU is required'],
+        unique: true, // Stock Keeping Unit
+    },
     category: {
         type: String,
         required: true,
@@ -28,23 +28,30 @@ const productSchema = new Schema({
         // type: Schema.Types.ObjectId, 
         // ref: 'Category'
     },
-    stockStatus:{
-        type: String,
-        enum: ['In Stock', 'Low Stock' ,'Out of Stock'],
-        default: 'Out of Stock',
-
-    },
     stock: {
         type: Number,
         required: true,
         min: [0, 'Stock cannot be negative'],
     },
+    stockStatus:{
+        type: String,
+        enum: ['In Stock', 'Low Stock' ,'Out of Stock'],
+        default: 'Out of Stock',
+        
+    },
     isActive:{
         type: Boolean,
         default: false,
     },
+    rating:{
+        type: Number,
+        default: 0,
+        min: [0, 'Rating cannot be negative'],
+        max: [5, 'Rating cannot be greater than 5']
+
+    },
     images: [{
-        type: String, // Array of image URLs
+       type: String,
     }],
     // Renamed for clarity
     user: {

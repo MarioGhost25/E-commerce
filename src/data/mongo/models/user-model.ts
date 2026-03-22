@@ -35,8 +35,7 @@ const userSchema = new Schema({
     shippingAddresses: [addressSchema],
     // You can add a reference to a dedicated Role collection for more complex systems
     // role: { type: Schema.Types.ObjectId, ref: 'Role' }
-
-}, {
+    }, {
     timestamps: true,
 });
 
