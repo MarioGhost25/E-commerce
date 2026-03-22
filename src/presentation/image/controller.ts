@@ -1,7 +1,5 @@
 import { Request, Response } from "express";
-import sharp from "sharp";
 import { CustomError, ImageRepository, UploadImageDto, UploadImageService } from "../../domain";
-import { handleError } from "../errors/handle.error";
 
 
 export class ImageController {
@@ -26,9 +24,9 @@ export class ImageController {
         if (error) return res.status(400).json({ error });
 
         new UploadImageService(this.imageRepository)
-        .execute(uploadImageDto!)
-        .then(imgUrl => res.json(imgUrl))
-        .catch(err => this.handleError(err, res))
+            .execute(uploadImageDto!)
+            .then(imgUrl => res.json(imgUrl))
+            .catch(err => this.handleError(err, res))
 
 
     }
