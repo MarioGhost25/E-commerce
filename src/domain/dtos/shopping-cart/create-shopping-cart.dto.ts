@@ -8,14 +8,13 @@ type ProductItem = {
 
 export class CreateShoppingCartDto {
 
-private constructor(
-        public readonly userId: string, // User ID
+    constructor(
+        public readonly userId: string,
         public readonly products: ProductItem[],
-        public readonly status?: string,
-    ) {}
+    ) { }
 
     public static create(object: { [key: string]: any }): [string?, CreateShoppingCartDto?] {
-        const { user, products, status } = object;
+        const { user, products } = object;
 
         // 1. Required Fields Validation
         if (!user) return ["Missing user ID", undefined];
@@ -44,16 +43,9 @@ private constructor(
             if (typeof item.price !== 'number' || item.price < 0) {
                 return ["Product price must be a non-negative number", undefined];
             }
+            
         }
 
-        // 3. Optional Fields Validation
-        if (status) {
-            const validStatuses = ['active', 'converted', 'abandoned'];
-            if (typeof status !== 'string' || !validStatuses.includes(status)) {
-                return [`Invalid status. Must be one of: ${validStatuses.join(', ')}`, undefined];
-            }
-        }
-
-        return [undefined, new CreateShoppingCartDto(user, products, status)];
+        return [undefined, new CreateShoppingCartDto(user, products)];
     }
 }

@@ -1,10 +1,10 @@
-import { CreateShoppingCartDto, ShoppingCart, ShoppingCartRepository } from "../.."
+import { ShoppingCart, ShoppingCartRepository } from "../.."
 
-export interface GetByIDShoppingCartServiceInterface {
+export interface GetCartByUserIdServiceInterface {
     execute(id: string): Promise<ShoppingCart>
 }
 
-export class GetByIDShoppingCartService implements GetByIDShoppingCartService{
+export class GetCartByUserIdService implements GetCartByUserIdServiceInterface{
     
     constructor (
         private readonly shoppingCartRepository: ShoppingCartRepository

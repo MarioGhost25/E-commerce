@@ -17,7 +17,7 @@ export class MongoShoppingCartDatasourceImpl implements ShoppingCartDatasource {
             const productsFromDto = createShoppingCartDto.products.map((item) => ({
                 product: item.product,
                 quantity: item.quantity,
-                price: item.price, // Include the price
+                price: item.price, 
             }));
 
             const totalPrice = productsFromDto.reduce((sum: number, item) => sum + (item.price * item.quantity), 0);
@@ -26,33 +26,12 @@ export class MongoShoppingCartDatasourceImpl implements ShoppingCartDatasource {
                 shoppingCart = new ShoppingCartModel({
                     user: createShoppingCartDto.userId,
                     products: productsFromDto,// Add the correctly formatted products
-                    total: totalPrice 
+                    total: totalPrice
                 });
-            } else {
-                // 4. If the cart exists, check for duplicate products.
-                const incomingProductIds = new Set(
-                    productsFromDto.map((p) => p.product)
-                );
-                const existingProductsInCart = shoppingCart.products.filter((p) =>
-                    incomingProductIds.has(p.product.toString())
-                );
-                if (existingProductsInCart.length > 0) {
-                    const existingIds = existingProductsInCart.map((p) =>
-                        p.product.toString()
-                    );
-                    throw CustomError.badRequest(
-                        `Products with these IDs are already in the cart: ${existingIds.join(
-                            ", "
-                        )
-                        }. Please use the update endpoint to change quantity.`
-                    );
-                }
-                // 5. If no duplicates, add the new products to the existing cart.
-                shoppingCart.products.push(...productsFromDto);
             }
-            // 6. Save the changes to the database.
+            // 4. Save the changes to the database.
             await shoppingCart.save();
-            // 7. Return the ShoppingCart entity.
+            // 5. Return the ShoppingCart entity.
             return ShoppingCart.fromObject(shoppingCart);
         } catch (error) {
             if (error instanceof CustomError) {
@@ -62,21 +41,44 @@ export class MongoShoppingCartDatasourceImpl implements ShoppingCartDatasource {
         }
     }
 
-    updateShoppingCart(): Promise<ShoppingCart> {
-        throw new Error("Method not implemented.");
+    async updateShoppingCart(): Promise<ShoppingCart> {
+        throw new Error('not implemented')
+        //     // 4. If the cart exists, check for duplicate products.
+        //     const incomingProductIds = new Set(
+        //         productsFromDto.map((p) => p.product)
+        //     );
+        //     const existingProductsInCart = shoppingCart.products.filter((p) =>
+        //         incomingProductIds.has(p.product.toString())
+        //     );
+        //     if (existingProductsInCart.length > 0) {
+        //         const existingIds = existingProductsInCart.map((p) =>
+        //             p.product.toString()
+        //         );
+        //         throw CustomError.badRequest(
+        //             `Products with these IDs are already in the cart: ${existingIds.join(
+        //                 ", "
+        //             )
+        //             }. Please use the update endpoint to change quantity.`
+        //         );
+        //     }
+        //     // 5. If no duplicates, add the new products to the existing cart.
+        //     shoppingCart.products.push(...productsFromDto);
+        // }
+
     }
     searchALL(): Promise<ShoppingCart[]> {
         throw new Error("Method not implemented.");
     }
 
-    async getCartByUserId(userId: string): Promise<ShoppingCart> {
+    async getCartByUserId(userId: string){
         try {
-            const cart = await ShoppingCartModel.findOne({ user: userId }).populate('products.product');
-    
+            const cart = await ShoppingCartModel.findOne({ user: userId })
+            .populate('products.product', 'name images');
+
             if (!cart) {
                 throw CustomError.notFound('Shopping cart not found for this user.');
             }
-    
+            
             return ShoppingCart.fromObject(cart);
             
         } catch (error) {
@@ -86,4 +88,5 @@ export class MongoShoppingCartDatasourceImpl implements ShoppingCartDatasource {
             throw CustomError.internalServer('Error while getting the shopping cart');
         }
     }
+    
 } 

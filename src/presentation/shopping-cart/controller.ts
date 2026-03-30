@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
-import { CreateShoppingCartDto, CreateShoppingCartService, CustomError, ShoppingCartRepository } from "../../domain";
+import { CreateShoppingCartDto, CreateShoppingCartService, CustomError, GetCartByUserIdService, ShoppingCartRepository } from "../../domain";
+import { error } from "console";
 
 
 export class ShoppingCartController {
@@ -17,39 +18,42 @@ export class ShoppingCartController {
         return res.status(500).json({ error: 'Internal server error' });
     };
 
-    createProductOnShoppingCart = async (req: Request, res: Response): Promise<void> => {
+    createProductOnShoppingCart = (req: Request, res: Response) => {
 
         const [error, createShoppingCartDto] = CreateShoppingCartDto.create({
             ...req.body,
             user: req.body.user.id,
         });
 
-        if (error) {
-            res.status(400).json({ error });
-            return;
-        }
+        if (error) res.status(400).json({ error });
 
-        try {
-            const shoppingC = await new CreateShoppingCartService(this.shoppingCartRepository).execute(createShoppingCartDto!);
-            res.status(201).json(shoppingC);
-        } catch (error) {
-            this.handleError(error, res);
-        }
+
+        new CreateShoppingCartService(this.shoppingCartRepository)
+            .execute(createShoppingCartDto!)
+            .then(cart => res.json(cart))
+            .catch(err => this.handleError(err, res))
+
     }
 
+
     getCartByUserId = (req: Request, res: Response) => {
-        console.log(req.body.user);
 
-        const { id } = req.body.user;
+        const { _id: id } = req.body.user.id;
+        if (!id) res.status(400).json({ error: 'User ID is required ' })
 
-        this.shoppingCartRepository.getCartByUserId(id)
-            .then(result => res.json(result))
+        new GetCartByUserIdService(this.shoppingCartRepository)
+            .execute(id)
+            .then(cart => res.json(cart))
             .catch(err => this.handleError(err, res));
 
     }
 
+    updateProductOnShoppingCart = (req: Request, res: Response) => {
+        throw new Error('Not Implemented')
+    }
+
     removeProductOnShoppingCart = (req: Request, res: Response) => {
-        // * TODO
+        throw new Error('Not Implemented')
 
 
     }

@@ -6,7 +6,8 @@ export * from './dtos/auth/get-user.dto';
 export * from './dtos/auth/update-password.dto';
 export * from './dtos/products/create-product.dto';
 export * from './dtos/products/update-product.dto';
-export * from './dtos/shopping-cart/create-shoppingC.dto';
+export * from './dtos/shopping-cart/create-shopping-cart.dto';
+export * from './dtos/shopping-cart/update-shopping-cart.dto';
 export * from './dtos/payment/create-payment.dto';
 export * from './errors/custom.error';
 export * from './dtos/image/upload-image.dto';
@@ -22,20 +23,20 @@ export * from './use-cases/product/update-product.service';
 export * from './use-cases/product/searchAll-products.service';
 export * from './use-cases/product/delete-product.service';
 export * from './use-cases/shopping-cart/create-shopping-cart.service';
-export * from './use-cases/shopping-cart/getById-shopping-cart.service';
+export * from './use-cases/shopping-cart/get-by-id-shopping-cart.service';
 export * from './use-cases/payment/create-payment.service';
 export * from './use-cases/image/upload-image.service';
 
 
 
 //* Repositories
-  //user
+//user
 export * from './repositories/user-repository';
 export * from './datasources/user-datasource';
-  //product
+//product
 export * from './repositories/product-repository';
 export * from './datasources/product-datasource';
- //Shopping-Cart
+//Shopping-Cart
 export * from './repositories/shopping-cart-repository';
 export * from './datasources/shopping-cart-datasource';
 //payment
@@ -54,7 +55,7 @@ export * from './datasources/refresh-token-datasource';
 //* Entities
 export * from './entities/user-entity';
 export * from './entities/product-entity';
-export * from './entities/shoppingCart-entity';
+export * from './entities/shopping-cart-entity';
 export * from './entities/payment-entity';
 export * from './entities/image-entity';
 export * from './entities/refresh-token-entity';
