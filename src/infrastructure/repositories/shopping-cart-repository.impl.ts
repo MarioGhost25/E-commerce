@@ -1,4 +1,4 @@
-import { CreateShoppingCartDto, ShoppingCart, ShoppingCartDatasource, ShoppingCartRepository } from "../../domain";
+import { AddProductsDto, CreateShoppingCartDto, ShoppingCart, ShoppingCartDatasource, ShoppingCartRepository } from "../../domain";
 
 
 export class ShoppingCartRepositoryImpl implements ShoppingCartRepository{
@@ -10,13 +10,12 @@ export class ShoppingCartRepositoryImpl implements ShoppingCartRepository{
     createShoppingCart(createShoppingCartDto: CreateShoppingCartDto): Promise<ShoppingCart> {
         return this.shoppingCartDatasource.createShoppingCart(createShoppingCartDto);
     }
-    updateShoppingCart(): Promise<ShoppingCart> {
-        throw new Error("Method not implemented.");
+    addProducts(addProductsDto: AddProductsDto): Promise<ShoppingCart> {
+        return this.shoppingCartDatasource.addProducts(addProductsDto)
     }
     searchALL(): Promise<ShoppingCart[]> {
         throw new Error("Method not implemented.");
     }
-    
     getCartByUserId(id: string): Promise<ShoppingCart> {
         return this.shoppingCartDatasource.getCartByUserId(id);
     }

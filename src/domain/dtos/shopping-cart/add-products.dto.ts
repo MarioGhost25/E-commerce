@@ -1,18 +1,19 @@
-import { Types } from 'mongoose';
+import { Types } from "mongoose";
 
 type ProductItem = {
     product: string; // Product ID
     quantity: number;
 };
 
-export class CreateShoppingCartDto {
+export class AddProductsDto {
 
+    
     constructor(
         public readonly userId: string,
         public readonly products: ProductItem[],
     ) { }
 
-    public static create(object: { [key: string]: any }): [string?, CreateShoppingCartDto?] {
+    public static add(object: { [key: string]: any }): [string?, AddProductsDto?] {
         const { user, products } = object;
 
         // 1. Required Fields Validation
@@ -31,8 +32,9 @@ export class CreateShoppingCartDto {
         // Validate each item in the products array
         for (const item of products) {
             if (!item.product || !item.quantity) {
-                return ["Each product item must include product ID and quantity", undefined];
+                return ["Each product item must include product ID, quantity", undefined];
             }
+
             if (!Types.ObjectId.isValid(item.product)) {
                 return [`Invalid product ID: ${item.product}`, undefined];
             }
@@ -42,6 +44,7 @@ export class CreateShoppingCartDto {
             
         }
 
-        return [undefined, new CreateShoppingCartDto(user, products)];
+        return [undefined, new AddProductsDto(user, products)];
     }
+
 }

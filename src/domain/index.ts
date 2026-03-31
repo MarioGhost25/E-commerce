@@ -7,7 +7,7 @@ export * from './dtos/auth/update-password.dto';
 export * from './dtos/products/create-product.dto';
 export * from './dtos/products/update-product.dto';
 export * from './dtos/shopping-cart/create-shopping-cart.dto';
-export * from './dtos/shopping-cart/update-shopping-cart.dto';
+export * from './dtos/shopping-cart/add-products.dto';
 export * from './dtos/payment/create-payment.dto';
 export * from './errors/custom.error';
 export * from './dtos/image/upload-image.dto';
@@ -24,6 +24,7 @@ export * from './use-cases/product/searchAll-products.service';
 export * from './use-cases/product/delete-product.service';
 export * from './use-cases/shopping-cart/create-shopping-cart.service';
 export * from './use-cases/shopping-cart/get-by-id-shopping-cart.service';
+export * from './use-cases/shopping-cart/add-products.service';
 export * from './use-cases/payment/create-payment.service';
 export * from './use-cases/image/upload-image.service';
 
