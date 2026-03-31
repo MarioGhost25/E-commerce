@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, RequestHandler, Response } from "express";
 import { AddProductsDto, AddProductsService, CreateShoppingCartDto, CreateShoppingCartService, CustomError, GetCartByUserIdService, ShoppingCartRepository } from "../../domain";
 
 
@@ -8,25 +8,32 @@ export class ShoppingCartController {
         private readonly shoppingCartRepository: ShoppingCartRepository,
     ) { }
 
-    private handleError = (error: unknown, res: Response) => {
+    private handleError = (error: unknown, res: Response): void => {
         if (error instanceof CustomError) {
-            return res.status(error.statusCode).json({ error: error.message });
+            res.status(error.statusCode).json({ error: error.message });
+            return;
         }
 
         console.log(`${error}`);
-        return res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Internal server error' });
     };
 
-    createShoppingCart = (req: Request, res: Response) => {
+    createShoppingCart: RequestHandler = (req: Request, res: Response) => {
         const userId = req.user?.id;
-        if (!userId) return res.status(401).json({ error: 'Unauthorized user' });
+        if (!userId) {
+            res.status(401).json({ error: 'Unauthorized user' });
+            return;
+        }
 
         const [error, createShoppingCartDto] = CreateShoppingCartDto.create({
             ...req.body,
             user: userId,
         });
 
-        if (error) return res.status(400).json({ error });
+        if (error) {
+            res.status(400).json({ error });
+            return;
+        }
 
         new CreateShoppingCartService(this.shoppingCartRepository)
             .execute(createShoppingCartDto!)
@@ -35,9 +42,12 @@ export class ShoppingCartController {
 
     }
 
-    getCartByUserId = (req: Request, res: Response) => {
+    getCartByUserId: RequestHandler = (req: Request, res: Response) => {
         const userId = req.user?.id;
-        if (!userId) return res.status(401).json({ error: 'Unauthorized user' });
+        if (!userId) {
+            res.status(401).json({ error: 'Unauthorized user' });
+            return;
+        }
 
         new GetCartByUserIdService(this.shoppingCartRepository)
             .execute(userId)
@@ -46,16 +56,22 @@ export class ShoppingCartController {
 
     }
 
-    addProducts = (req: Request, res: Response) => {
+    addProducts: RequestHandler = (req: Request, res: Response) => {
         const userId = req.user?.id;
-        if (!userId) return res.status(401).json({ error: 'Unauthorized user' });
+        if (!userId) {
+            res.status(401).json({ error: 'Unauthorized user' });
+            return;
+        }
 
         const [error, addProductsDto] = AddProductsDto.add({
             ...req.body,
             user: userId,
         })
 
-        if (error) return res.status(400).json({ error })
+        if (error) {
+            res.status(400).json({ error });
+            return;
+        }
 
         new AddProductsService(this.shoppingCartRepository)
         .execute(addProductsDto!)
@@ -63,7 +79,7 @@ export class ShoppingCartController {
         .catch(err => this.handleError(err, res))
     }
 
-    removeProductOnShoppingCart = (req: Request, res: Response) => {
+    removeProductOnShoppingCart: RequestHandler = (req, res) => {
         throw new Error('Not Implemented')
 
 
