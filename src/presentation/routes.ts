@@ -6,6 +6,7 @@ import { ProductRoutes } from "./product/router";
 import { ShoppingCartRoutes } from "./shopping-cart/routes";
 import { PaymentRoutes } from "./payment/routes";
 import { ImageRoute } from "./image/image.route";
+import { CategoryRoutes } from "./category/routes";
 
 
 export class AppRoutes {
@@ -22,6 +23,8 @@ export class AppRoutes {
         router.use('/eco/shopping', ShoppingCartRoutes.routes );
         //* PaymentController
         router.use('/eco/payment', PaymentRoutes.routes);
+        //* CategoryController
+        router.use('/eco/category', CategoryRoutes.routes);
         //* ImageController
         router.use('/eco/image', ImageRoute.routes);
 

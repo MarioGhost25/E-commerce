@@ -11,9 +11,12 @@ const CategorySchema = new Schema({
         type: String,
         required: [true, 'Description is required']
     },
+    slug:{
+        type: String,
+        unique: true,
+    },
     image: {
         type: String,
-        
     },
     isActive: {
         type: Boolean,

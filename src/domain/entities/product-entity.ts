@@ -18,7 +18,7 @@ export class ProductEntity {
     public static fromObject( object: { [ key: string ]: any; } ): ProductEntity {
       const { id, name, description, price, category, stock, sku, isActive, stockStatus,rating, images} = object;
   
-      const userEntity = new ProductEntity(
+      const productEntity = new ProductEntity(
         id, 
         name, 
         description,
@@ -32,7 +32,7 @@ export class ProductEntity {
         images,
       );
       
-      return userEntity;
+      return productEntity;
   
     }
   
