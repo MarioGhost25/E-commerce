@@ -19,7 +19,7 @@ export class ShoppingCartRoutes{
         router.post('/', [AuthMiddleware.validateJWT], controller.createShoppingCart );
         router.post('/add-products', [AuthMiddleware.validateJWT], controller.addProducts);
         router.get('/get-cart-by-user-id', [AuthMiddleware.validateJWT], controller.getCartByUserId)
-        router.delete('/', controller.removeProductOnShoppingCart );
+        router.delete('/delete-products', [AuthMiddleware.validateJWT], controller.removeProducts);
         
         return router;
 

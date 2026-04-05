@@ -27,7 +27,7 @@ export class CreateShoppingCartDto {
         if (!Array.isArray(products)) {
             return ["Products must be an array", undefined];
         }
-
+        
         // Validate each item in the products array
         for (const item of products) {
             if (!item.product || !item.quantity) {

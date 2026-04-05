@@ -5,27 +5,27 @@ import { envs } from '../../config';
 
 
 export class PaymentController {
-  
+
   constructor(
     private readonly shoppingCartRepository: ShoppingCartRepository,
     private readonly paymentRepository: PaymentRepository
   ) { }
-  
-  private  handleError = (error: unknown, res: Response) => {
+
+  private handleError = (error: unknown, res: Response) => {
     if (error instanceof CustomError) {
       return res.status(error.statusCode).json({ error: error.message });
     }
-    console.log(error); // Log the error for debugging purposes
+    console.log(`${error}`);
     return res.status(500).json({ error: 'Internal Server Error' });
   };
-  
+
   createPayment = async (req: Request, res: Response): Promise<void> => {
 
     const [error, createPaymentDto] = CreatePaymentDto.createPayment({
       ...req.body,
       user: req.body.user.id // Asegurarse de que el usuario esté autenticado y disponible en req.body.user
     })
-    
+
     if (error) {
       res.status(400).json({ error });
       return;
@@ -33,7 +33,7 @@ export class PaymentController {
 
     try {
       const shoppingCart = await this.shoppingCartRepository.getCartByUserId(createPaymentDto!.user);
-      
+
       if (!shoppingCart || shoppingCart.products.length === 0) {
         throw CustomError.badRequest('Shopping cart is empty or does not exist.');
       }
@@ -45,7 +45,7 @@ export class PaymentController {
     } catch (error) {
       this.handleError(error, res);
     }
-    }
+  }
 
   // Method to handle Stripe Webhook events
   stripeWebhook = async (req: Request, res: Response): Promise<void> => {
@@ -62,7 +62,7 @@ export class PaymentController {
       res.status(400).send(`Webhook Error: ${err.message}`);
       return; // 👈 detiene ejecución si no se pudo construir el evento
     }
-    
+
     // Manejo del evento checkout.session.completed
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as Stripe.Checkout.Session;
@@ -72,7 +72,7 @@ export class PaymentController {
         res.status(400).json({ error: 'Missing metadata in Stripe session' });
         return; // 👈 detenemos si faltan datos
       }
-      
+
       const paymentDto = {
         user: userId,
         order: orderId,

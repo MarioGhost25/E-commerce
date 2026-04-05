@@ -7,7 +7,7 @@ type ProductItem = {
 
 export class AddProductsDto {
 
-    
+
     constructor(
         public readonly userId: string,
         public readonly products: ProductItem[],
@@ -15,7 +15,6 @@ export class AddProductsDto {
 
     public static add(object: { [key: string]: any }): [string?, AddProductsDto?] {
         const { user, products } = object;
-
         // 1. Required Fields Validation
         if (!user) return ["Missing user ID", undefined];
         if (!products) return ["Missing products", undefined];
@@ -41,7 +40,7 @@ export class AddProductsDto {
             if (typeof item.quantity !== 'number' || !Number.isInteger(item.quantity) || item.quantity < 1) {
                 return ["Product quantity must be a positive integer", undefined];
             }
-            
+
         }
 
         return [undefined, new AddProductsDto(user, products)];

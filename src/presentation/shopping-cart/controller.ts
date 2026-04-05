@@ -1,5 +1,5 @@
 import { Request, RequestHandler, Response } from "express";
-import { AddProductsDto, AddProductsService, CreateShoppingCartDto, CreateShoppingCartService, CustomError, GetCartByUserIdService, ShoppingCartRepository } from "../../domain";
+import { AddProductsDto, AddProductsService, CreateShoppingCartDto, CreateShoppingCartService, CustomError, GetCartByUserIdService, RemoveProductsDto, RemoveProductsService, ShoppingCartRepository } from "../../domain";
 
 
 export class ShoppingCartController {
@@ -74,14 +74,34 @@ export class ShoppingCartController {
         }
 
         new AddProductsService(this.shoppingCartRepository)
-        .execute(addProductsDto!)
-        .then(cart => res.json(cart))
-        .catch(err => this.handleError(err, res))
+            .execute(addProductsDto!)
+            .then(cart => res.json(cart))
+            .catch(err => this.handleError(err, res))
     }
 
-    removeProductOnShoppingCart: RequestHandler = (req, res) => {
-        throw new Error('Not Implemented')
+    removeProducts : RequestHandler = (req: Request, res: Response) => {
+        const userId = req.user?.id;
+        if (!userId) {
+            res.status(401).json({ error: 'Unauthorized user' });
+            return;
+        }
 
+        const [error, removeProductsDto] = RemoveProductsDto.remove({
+            ...req.body,
+            user: userId,
+        });
+
+        if (error) {
+            res.status(400).json({ error });
+            return;
+        }
+
+        new RemoveProductsService(this.shoppingCartRepository)
+            .execute(removeProductsDto!)
+            .then(cart => res.json(cart))
+            .catch(err => this.handleError(err, res));
 
     }
+
+    
 }

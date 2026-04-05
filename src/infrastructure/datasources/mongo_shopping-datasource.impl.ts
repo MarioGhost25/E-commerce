@@ -1,5 +1,5 @@
 import { ProductModel, ShoppingCartModel } from "../../data";
-import { CreateShoppingCartDto, CustomError, ShoppingCart, ShoppingCartDatasource, AddProductsDto } from "../../domain";
+import { CreateShoppingCartDto, CustomError, ShoppingCart, ShoppingCartDatasource, AddProductsDto, RemoveProductsDto } from "../../domain";
 
 
 export class MongoShoppingCartDatasourceImpl implements ShoppingCartDatasource {
@@ -97,6 +97,43 @@ export class MongoShoppingCartDatasourceImpl implements ShoppingCartDatasource {
             }
 
             throw CustomError.internalServer('Error while adding products to shopping cart');
+        }
+    }
+
+    async removeProducts(removeProductsDto: RemoveProductsDto) {
+        try {
+            const { userId, products } = removeProductsDto;
+
+            const cart = await ShoppingCartModel.findOne({ user: userId });
+            if (!cart) {
+                throw CustomError.notFound('Shopping cart not found for this user.');
+            }
+
+            for (const item of products) {
+
+                const product = cart.products.id(item._id);
+
+                if (!product) {
+                    throw CustomError.notFound(
+                        `Product with id ${item._id} not found in cart`
+                    );
+                }
+
+                cart.total -= product.price * product.quantity;
+
+                product.deleteOne();
+            }
+
+            await cart.save();
+
+            return ShoppingCart.fromObject(cart);
+
+
+        } catch (error) {
+            if (error instanceof CustomError) {
+                throw error;
+            }
+            throw CustomError.internalServer('Error while removing products from shopping cart');
         }
     }
 
