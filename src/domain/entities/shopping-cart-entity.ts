@@ -18,6 +18,8 @@ export class ShoppingCart {
         product: item.product, //! viene todo el productSchema
         quantity: item.quantity,
         price: item.price,
+        _id: item._id,
+
       }
     })
 
@@ -27,7 +29,6 @@ export class ShoppingCart {
       cartProducts,
       total
     );
-
     return shoppingCartEntity;
   }
 }

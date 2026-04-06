@@ -144,12 +144,11 @@ export class MongoShoppingCartDatasourceImpl implements ShoppingCartDatasource {
     async getCartByUserId(userId: string) {
         try {
             const cart = await ShoppingCartModel.findOne({ user: userId })
-                .populate('products.product', 'name images');
+                .populate('products.product', '_id name images');
 
             if (!cart) {
                 throw CustomError.notFound('Shopping cart not found for this user.');
             }
-
             return ShoppingCart.fromObject(cart);
 
         } catch (error) {
