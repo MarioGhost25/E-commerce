@@ -1,5 +1,5 @@
 import { Request, RequestHandler, Response } from "express";
-import { AddProductsDto, AddProductsService, CreateShoppingCartDto, CreateShoppingCartService, CustomError, GetCartByUserIdService, RemoveProductsDto, RemoveProductsService, ShoppingCartRepository } from "../../domain";
+import { AddProductsDto, AddProductsService, CreateShoppingCartDto, CreateShoppingCartService, CustomError, DecreaseProductsQuantityDto, DecreaseProductsQuantityService, GetCartByUserIdService, RemoveProductsDto, RemoveProductsService, ShoppingCartRepository } from "../../domain";
 
 
 export class ShoppingCartController {
@@ -77,6 +77,29 @@ export class ShoppingCartController {
             .execute(addProductsDto!)
             .then(cart => res.json(cart))
             .catch(err => this.handleError(err, res))
+    }
+
+    decreaseProductsQuantity: RequestHandler = (req: Request, res: Response) => {
+        const userId = req.user?.id;
+        if (!userId) {
+            res.status(401).json({ error: 'Unauthorized user' });
+            return;
+        }
+
+        const [error, decreaseProductsQuantityDto] = DecreaseProductsQuantityDto.decrease({
+            ...req.body,
+            user: userId,
+        });
+
+        if (error) {
+            res.status(400).json({ error });
+            return;
+        }
+
+        new DecreaseProductsQuantityService(this.shoppingCartRepository)
+            .execute(decreaseProductsQuantityDto!)
+            .then(cart => res.json(cart))
+            .catch(err => this.handleError(err, res));
     }
 
     removeProducts : RequestHandler = (req: Request, res: Response) => {

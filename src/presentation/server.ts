@@ -31,14 +31,20 @@ export class Server{
 
 
         //* CORS
-        const allowedOrigins = envs.CORS_ORIGIN
-            ? envs.CORS_ORIGIN.split(',').map(o => o.trim()).filter(Boolean)
-            : [];
+        const allowedOrigins = (envs.CORS_ORIGIN || 'http://localhost:5173')
+            .split(',')
+            .map(origin => origin.trim().replace(/\/+$/, ''))
+            .filter(Boolean);
 
         this.app.use(cors({
-            origin: allowedOrigins.length ? allowedOrigins : true,
+            origin: (origin, callback) => {
+                if (!origin) return callback(null, true);
+
+                const normalizedOrigin = origin.replace(/\/+$/, '');
+                return callback(null, allowedOrigins.includes(normalizedOrigin));
+            },
             credentials: true,
-            methods: ['GET', 'POST', 'PUT', 'DELETE'],
+            methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
             allowedHeaders: ['Content-Type', 'Authorization']
         }));
         //* gateway routes

@@ -1,5 +1,5 @@
 import { ProductModel, ShoppingCartModel } from "../../data";
-import { CreateShoppingCartDto, CustomError, ShoppingCart, ShoppingCartDatasource, AddProductsDto, RemoveProductsDto } from "../../domain";
+import { CreateShoppingCartDto, CustomError, ShoppingCart, ShoppingCartDatasource, AddProductsDto, RemoveProductsDto, DecreaseProductsQuantityDto } from "../../domain";
 
 
 export class MongoShoppingCartDatasourceImpl implements ShoppingCartDatasource {
@@ -91,6 +91,53 @@ export class MongoShoppingCartDatasourceImpl implements ShoppingCartDatasource {
             await shoppingCart.save();
 
             return ShoppingCart.fromObject(shoppingCart);
+        } catch (error) {
+            if (error instanceof CustomError) {
+                throw error;
+            }
+
+            throw CustomError.internalServer('Error while adding products to shopping cart');
+        }
+    }
+
+    async decreaseProductsQuantity(decreaseProductsQuantityDto: DecreaseProductsQuantityDto) {
+
+        try {
+            const shoppingCart = await ShoppingCartModel.findOne({ user: decreaseProductsQuantityDto.userId });
+
+            if (!shoppingCart) {
+                throw CustomError.notFound('Shopping cart not found for this user.');
+            }
+
+            for (const item of decreaseProductsQuantityDto.products) {
+                const productSchema = await ProductModel.findById(item._id);
+
+                if (!productSchema) {
+                    throw CustomError.notFound(`Product not found: ${item._id}`);
+                }
+                const existingItem = shoppingCart.products.find(
+                    (cartItem: any) => cartItem.product.toString() === item._id
+                );
+
+                if (!existingItem) {
+                    throw CustomError.notFound(`Product with id ${item._id} not found in cart`);
+                }
+                if (existingItem.quantity < item.quantity) {
+                    throw CustomError.badRequest(`Cannot decrease quantity for product ${item._id} by ${item.quantity} as it exceeds the current quantity in the cart`);
+                }
+
+                existingItem.quantity -= item.quantity;
+
+            }
+
+            shoppingCart.total = shoppingCart.products.reduce(
+                (sum: number, item: any) => sum + (item.price * item.quantity),
+                0
+            );
+
+            await shoppingCart.save();
+            return ShoppingCart.fromObject(shoppingCart);
+
         } catch (error) {
             if (error instanceof CustomError) {
                 throw error;

@@ -18,6 +18,7 @@ export class ShoppingCartRoutes{
         
         router.post('/', [AuthMiddleware.validateJWT], controller.createShoppingCart );
         router.post('/add-products', [AuthMiddleware.validateJWT], controller.addProducts);
+        router.patch('/decrease-products-quantity', [AuthMiddleware.validateJWT], controller.decreaseProductsQuantity);
         router.get('/get-cart-by-user-id', [AuthMiddleware.validateJWT], controller.getCartByUserId)
         router.delete('/delete-products', [AuthMiddleware.validateJWT], controller.removeProducts);
         

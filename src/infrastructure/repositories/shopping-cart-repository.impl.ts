@@ -1,4 +1,4 @@
-import { AddProductsDto, CreateShoppingCartDto, RemoveProductsDto, ShoppingCart, ShoppingCartDatasource, ShoppingCartRepository } from "../../domain";
+import { AddProductsDto, CreateShoppingCartDto, DecreaseProductsQuantityDto, RemoveProductsDto, ShoppingCart, ShoppingCartDatasource, ShoppingCartRepository } from "../../domain";
 
 
 export class ShoppingCartRepositoryImpl implements ShoppingCartRepository{
@@ -12,6 +12,9 @@ export class ShoppingCartRepositoryImpl implements ShoppingCartRepository{
     }
     addProducts(addProductsDto: AddProductsDto): Promise<ShoppingCart> {
         return this.shoppingCartDatasource.addProducts(addProductsDto)
+    }
+    decreaseProductsQuantity(decreaseProductsQuantityDto: DecreaseProductsQuantityDto): Promise<ShoppingCart> {
+        return this.shoppingCartDatasource.decreaseProductsQuantity(decreaseProductsQuantityDto);
     }
     removeProducts(removeProductsDto: RemoveProductsDto): Promise<ShoppingCart> {
         return this.shoppingCartDatasource.removeProducts(removeProductsDto);
