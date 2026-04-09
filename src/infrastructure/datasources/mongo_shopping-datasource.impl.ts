@@ -1,4 +1,4 @@
-import { ProductModel, ShoppingCartModel } from "../../data";
+import { ProductModel, ShoppingCartModel, UserModel } from "../../data";
 import { CreateShoppingCartDto, CustomError, ShoppingCart, ShoppingCartDatasource, AddProductsDto, RemoveProductsDto, DecreaseProductsQuantityDto } from "../../domain";
 
 
@@ -6,6 +6,13 @@ export class MongoShoppingCartDatasourceImpl implements ShoppingCartDatasource {
 
     async createShoppingCart(createShoppingCartDto: CreateShoppingCartDto) {
         try {
+            
+            let user = await UserModel.findById(createShoppingCartDto.userId);
+
+            if (!user) {
+                throw CustomError.notFound('User not found');
+            }
+
             let shoppingCart = await ShoppingCartModel.findOne({
                 user: createShoppingCartDto.userId
             });
@@ -34,12 +41,16 @@ export class MongoShoppingCartDatasourceImpl implements ShoppingCartDatasource {
                 user: createShoppingCartDto.userId,
                 products: productsFromDb,
             });
-
+            
+            
             shoppingCart.total = shoppingCart.products.reduce(
                 (sum: number, item: any) => sum + (item.price * item.quantity),
                 0
             );
+            
+            user.cartId = shoppingCart._id;
 
+            await user.save();
             await shoppingCart.save();
 
             return ShoppingCart.fromObject(shoppingCart);
@@ -48,7 +59,7 @@ export class MongoShoppingCartDatasourceImpl implements ShoppingCartDatasource {
             if (error instanceof CustomError) {
                 throw error;
             }
-            throw CustomError.internalServer('Erros while creating or updating the cart');
+            throw CustomError.internalServer('Errors while creating or updating the cart');
         }
     }
 

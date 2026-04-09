@@ -32,10 +32,15 @@ const userSchema = new Schema({
     contactPhone: {
         type: String,
     },
+    cartId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Cart',
+        default: null,
+    },
     shippingAddresses: [addressSchema],
     // You can add a reference to a dedicated Role collection for more complex systems
     // role: { type: Schema.Types.ObjectId, ref: 'Role' }
-    }, {
+}, {
     timestamps: true,
 });
 

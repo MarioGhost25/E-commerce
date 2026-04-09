@@ -18,6 +18,7 @@ export class CreateUserDto {
         public readonly password: string,
         public readonly role?: string,
         public readonly contactPhone?: string,
+        public readonly cartId?: string,
         public readonly shippingAddresses?: Address[],
     ) {}
 
@@ -28,6 +29,7 @@ export class CreateUserDto {
             password,
             role,
             contactPhone,
+            cartId,
             shippingAddresses
         } = object;
 
@@ -69,6 +71,7 @@ export class CreateUserDto {
             password,
             role,
             contactPhone,
+            cartId,
             shippingAddresses
         )];
     }
