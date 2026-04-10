@@ -12,8 +12,8 @@ export class ProductRepositoryImpl implements ProductRepository{
     updateProduct(updatedProductDto: UpdateProductDto): Promise<ProductEntity> {
         return this.productDatasource.updateProduct(updatedProductDto);
     }
-    deleteProduct(productId: string): Promise<ProductEntity> {
-        return this.productDatasource.deleteProduct(productId)
+    deleteProduct(productId: string, categoryId: string): Promise<ProductEntity> {
+        return this.productDatasource.deleteProduct(productId, categoryId)
     }
     searchAll(): Promise<ProductEntity[]> {
         return this.productDatasource.searchAll();

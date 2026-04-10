@@ -7,15 +7,14 @@ export class MongoShoppingCartDatasourceImpl implements ShoppingCartDatasource {
     async createShoppingCart(createShoppingCartDto: CreateShoppingCartDto) {
         try {
             
-            let user = await UserModel.findById(createShoppingCartDto.userId);
+            let [user, shoppingCart ] = await Promise.all([
+                UserModel.findById(createShoppingCartDto.userId),
+                ShoppingCartModel.findOne({ user: createShoppingCartDto.userId })
+            ]);
 
             if (!user) {
                 throw CustomError.notFound('User not found');
             }
-
-            let shoppingCart = await ShoppingCartModel.findOne({
-                user: createShoppingCartDto.userId
-            });
 
             const productsFromDb: Array<{ product: string; quantity: number; price: number }> = [];
 
@@ -50,8 +49,7 @@ export class MongoShoppingCartDatasourceImpl implements ShoppingCartDatasource {
             
             user.cartId = shoppingCart._id;
 
-            await user.save();
-            await shoppingCart.save();
+            await Promise.all([ user.save(), shoppingCart.save() ]);
 
             return ShoppingCart.fromObject(shoppingCart);
 

@@ -1,7 +1,7 @@
 import { ProductEntity, ProductRepository } from "../..";
 
 export interface DeleteProductInterface {
-    execute(productId: string): Promise<ProductEntity>
+    execute(productId: string, categoryId: string): Promise<ProductEntity>
 }
 
 export class DeleteProductService implements DeleteProductInterface {
@@ -9,7 +9,7 @@ export class DeleteProductService implements DeleteProductInterface {
         private readonly productRepository: ProductRepository,
     ){}
 
-    execute(productId: string): Promise<ProductEntity> {
-        return this.productRepository.deleteProduct(productId);
+    execute(productId: string, categoryId: string): Promise<ProductEntity> {
+        return this.productRepository.deleteProduct(productId, categoryId);
     }
 }

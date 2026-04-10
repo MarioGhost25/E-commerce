@@ -21,13 +21,6 @@ const productSchema = new Schema({
         required: [true, 'SKU is required'],
         unique: true, // Stock Keeping Unit
     },
-    category: {
-        type: String,
-        required: true,
-        // Consider creating a separate Category collection for better management
-        // type: Schema.Types.ObjectId, 
-        // ref: 'Category'
-    },
     stock: {
         type: Number,
         required: true,
@@ -48,10 +41,10 @@ const productSchema = new Schema({
         default: 0,
         min: [0, 'Rating cannot be negative'],
         max: [5, 'Rating cannot be greater than 5']
-
+        
     },
     images: [{
-       type: String,
+        type: String,
     }],
     // Renamed for clarity
     user: {
@@ -59,7 +52,12 @@ const productSchema = new Schema({
         ref: 'User',
         required: true,
     },
-
+    category: {
+        type: Schema.Types.ObjectId, 
+        ref: 'Category',
+        required: true,
+    },
+    
 }, {
     timestamps: true,
 });

@@ -53,11 +53,12 @@ export class ProductController {
   }
   deleteProduct = async (req: Request, res: Response): Promise<any> => {
     const id = req.params.id;
-    const [error, dto] = DeleteProductDto.create({ id });
+    const category = req.params.category;
+    const [error, dto] = DeleteProductDto.create({ id, category });
     if (error) return res.status(400).json({ error });
 
     try {
-      const deleted = await this.productRepository.deleteProduct(dto!.id);
+      const deleted = await this.productRepository.deleteProduct(dto!.id, dto!.category);
 
       if (!deleted) {
         return res.status(404).json({ error: 'Product not found' });
