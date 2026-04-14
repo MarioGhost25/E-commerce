@@ -9,6 +9,9 @@ export class ProductRepositoryImpl implements ProductRepository{
     createProduct(createProductDto: CreateProductDto): Promise<ProductEntity> {
         return this.productDatasource.createProduct(createProductDto);
     }
+    getProductById(id: string): Promise<ProductEntity> {
+        return this.productDatasource.getProductById(id);
+    }
     updateProduct(updatedProductDto: UpdateProductDto): Promise<ProductEntity> {
         return this.productDatasource.updateProduct(updatedProductDto);
     }

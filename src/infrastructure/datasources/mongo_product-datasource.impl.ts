@@ -35,6 +35,19 @@ export class MongoProductDatasourceImpl implements ProductDatasource {
             throw CustomError.internalServer(`${error}`);
         }
     }
+
+    async getProductById(id: string) {
+        
+        try {
+            const product = await ProductModel.findOne({_id: id});
+            if (!product) throw CustomError.notFound('Product not found');
+
+            return ProductEntity.fromObject(product);
+        } catch (error) {
+            throw CustomError.internalServer(`${error}`);
+        }
+    }
+
     async updateProduct(updatedProductDto: UpdateProductDto) {
 
         const existProduct = await ProductModel.findById(updatedProductDto.id);

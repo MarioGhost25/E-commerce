@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CreateProductDto, CreateProductService, CustomError, ProductRepository, SearchAllProducts, UpdateProductDto, UpdateProductService } from "../../domain";
+import { CreateProductDto, CreateProductService, CustomError, GetProductByIdService, ProductRepository, SearchAllProducts, UpdateProductDto, UpdateProductService } from "../../domain";
 import { DeleteProductDto } from "../../domain/dtos/products/delete-product.dto";
 
 export class ProductController {
@@ -37,6 +37,19 @@ export class ProductController {
       this.handleError(error, res);
     }
   };
+
+  getProductById = (req: Request, res: Response): any => {
+    const id = req.params.id;
+    if (!id) {
+            res.status(401).json({ error: 'Unauthorized user' });
+            return;
+        }
+
+    new GetProductByIdService(this.productRepository)
+      .execute(id)
+      .then(product => res.json(product))
+      .catch(error => this.handleError(error, res));
+  }
 
   updateProduct = (req: Request, res: Response): any => {
     const id = req.params.id;

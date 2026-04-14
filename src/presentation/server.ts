@@ -4,29 +4,29 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { envs } from '../config/envs';
 
-interface Options{
+interface Options {
     port: number,
     routes: Router
 }
 
-export class Server{
+export class Server {
 
     public readonly app = express();
     private serverListener?: any;
     private readonly port: number;
     private readonly routes: Router;
 
-    constructor(options: Options){
-        const {port, routes} = options;
+    constructor(options: Options) {
+        const { port, routes } = options;
         this.port = port;
         this.routes = routes;
     }
 
-    async start(){
-        
+    async start() {
 
-        this.app.use( express.json({limit: '10mb'}) );
-        this.app.use( express.urlencoded({ extended: true, limit: '10mb' }) );
+
+        this.app.use(express.json({ limit: '10mb' }));
+        this.app.use(express.urlencoded({ extended: true, limit: '10mb' }));
         this.app.use(cookieParser());
 
 
@@ -42,6 +42,7 @@ export class Server{
 
                 const normalizedOrigin = origin.replace(/\/+$/, '');
                 return callback(null, allowedOrigins.includes(normalizedOrigin));
+
             },
             credentials: true,
             methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
@@ -56,7 +57,7 @@ export class Server{
         });
     }
 
-    public stop(){
+    public stop() {
         this.serverListener?.close();
     }
 

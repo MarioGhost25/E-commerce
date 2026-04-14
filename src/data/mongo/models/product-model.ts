@@ -11,11 +11,33 @@ const productSchema = new Schema({
         type: String,
         required: true,
     },
+    longDescription: {
+        type: String,
+        max: [200, 'Long description cannot exceed 200 characters'],
+    },
+    features: [{
+        type: String,
+        trim: true,
+    }],
     price: {
         type: Number,
         required: true,
         min: [0, 'Price cannot be negative'],
     },
+    reviews: [{
+        user: {
+            type: Schema.Types.ObjectId
+        },
+        rating: {
+            type: Number,
+            min: [0, 'Rating cannot be negative'],
+            max: [5, 'Rating cannot be greater than 5']
+        },
+        comment: {
+            type: String,
+            max: [100, 'Comment cannot exceed 100 characters']
+        },
+    }],
     sku: {
         type: String,
         required: [true, 'SKU is required'],
@@ -40,8 +62,7 @@ const productSchema = new Schema({
         type: Number,
         default: 0,
         min: [0, 'Rating cannot be negative'],
-        max: [5, 'Rating cannot be greater than 5']
-        
+        max: [5, 'Rating cannot be greater than 5'],
     },
     images: [{
         type: String,

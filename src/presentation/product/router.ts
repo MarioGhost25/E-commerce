@@ -16,6 +16,7 @@ export class ProductRoutes {
         const controller = new ProductController( productRepository );
 
         router.post('/',[AuthMiddleware.validateJWT], controller.createProduct );
+        router.get('/:id', controller.getProductById );
         router.get('/', controller.search );
         router.delete('/:id/:category', controller.deleteProduct );
         router.put('/:id', controller.updateProduct );

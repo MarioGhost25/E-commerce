@@ -22,6 +22,7 @@ export * from './use-cases/user/login-user.service';
 export * from './use-cases/user/get-user.service';
 export * from './use-cases/user/update-password.service';
 export * from './use-cases/product/create-product.service';
+export * from './use-cases/product/get-product-by-id.service';
 export * from './use-cases/product/update-product.service';
 export * from './use-cases/product/searchAll-products.service';
 export * from './use-cases/product/delete-product.service';
