@@ -10,6 +10,7 @@ export class CreateProductDto {
         public readonly name: string,
         public readonly price: number,
         public readonly description: string,
+        public readonly longDescription: string | null,
         public readonly category: string,
         public readonly stock: number,
         public readonly user: string,
@@ -24,6 +25,7 @@ export class CreateProductDto {
             name,
             price,
             description,
+            longDescription,
             category,
             stock,
             user,
@@ -35,6 +37,7 @@ export class CreateProductDto {
 
         let newPrice = price !== undefined ? Number(price) : price;
         let stockNumber = stock !== undefined ? Number(stock) : stock;
+        const normalizedLongDescription = longDescription;
 
         // 1. Required Fields Validation
         if (!name) return ["Missing name", undefined];
@@ -50,6 +53,9 @@ export class CreateProductDto {
         // 2. Type and Value Validation
         if (typeof name !== 'string') return ["Name must be a string", undefined];
         if (typeof description !== 'string') return ["Description must be a string", undefined];
+        if (normalizedLongDescription !== undefined && normalizedLongDescription !== null && typeof normalizedLongDescription !== 'string') {
+            return ["Long description must be a string", undefined];
+        }
         if (typeof category !== 'string') return ["Category must be a string", undefined];
         if (typeof stockStatus !== 'string') {
             // Normaliza el valor recibido (por si viene null, undefined o string incorrecto)
@@ -81,6 +87,7 @@ export class CreateProductDto {
             name,
             newPrice,
             description,
+            normalizedLongDescription ?? null,
             category,
             stockNumber,
             user,

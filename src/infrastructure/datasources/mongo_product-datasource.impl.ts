@@ -60,6 +60,7 @@ export class MongoProductDatasourceImpl implements ProductDatasource {
             const newUpdateProduct = await ProductModel.findByIdAndUpdate(
                 updatedProductDto.id,
                 { ...updatedProductDto, sku },
+                { new: true }  
             );
 
             if (!newUpdateProduct) throw CustomError.notFound('Error updating product');

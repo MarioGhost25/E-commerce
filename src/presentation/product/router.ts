@@ -7,19 +7,19 @@ import { ProductRepositoryImpl } from "../../infrastructure/repositories/product
 
 export class ProductRoutes {
 
-    static get routes(): Router{
+    static get routes(): Router {
 
         const router = Router();
 
         const datasource = new MongoProductDatasourceImpl();
-        const productRepository = new ProductRepositoryImpl( datasource );
-        const controller = new ProductController( productRepository );
+        const productRepository = new ProductRepositoryImpl(datasource);
+        const controller = new ProductController(productRepository);
 
-        router.post('/',[AuthMiddleware.validateJWT], controller.createProduct );
-        router.get('/:id', controller.getProductById );
-        router.get('/', controller.search );
-        router.delete('/:id/:category', controller.deleteProduct );
-        router.put('/:id', controller.updateProduct );
+        router.post('/', [AuthMiddleware.validateJWT], controller.createProduct);
+        router.get('/:id', controller.getProductById);
+        router.get('/', controller.search);
+        router.delete('/:id/:category', controller.deleteProduct);
+        router.put('/:id', [AuthMiddleware.validateJWT], controller.updateProduct);
 
         return router;
 

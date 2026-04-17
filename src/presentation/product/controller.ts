@@ -20,10 +20,10 @@ export class ProductController {
   createProduct = async (req: Request, res: Response): Promise<void> => {
     const [error, createProductDto] = CreateProductDto.createProduct({
       ...req.body,
-      user: req.body.user.id, 
-     
+      user: req.body.user.id,
+
     });
- 
+
 
     if (error) {
       res.status(400).json({ error });
@@ -41,9 +41,9 @@ export class ProductController {
   getProductById = (req: Request, res: Response): any => {
     const id = req.params.id;
     if (!id) {
-            res.status(401).json({ error: 'Unauthorized user' });
-            return;
-        }
+      res.status(401).json({ error: 'Unauthorized user' });
+      return;
+    }
 
     new GetProductByIdService(this.productRepository)
       .execute(id)
@@ -54,13 +54,17 @@ export class ProductController {
   updateProduct = (req: Request, res: Response): any => {
     const id = req.params.id;
 
-    const [error, updateProductDto] = UpdateProductDto.updateProduct({ ...req.body, id});
-    if(error) return res.status(400).json({ error });
+    const [error, updateProductDto] = UpdateProductDto.updateProduct({
+      ...req.body, 
+      user: req.body.user.id,
+      id
+    });
+    if (error) return res.status(400).json({ error });
 
     new UpdateProductService(this.productRepository)
-    .execute(updateProductDto!)
-    .then( product => res.json( product ))
-    .catch( error => this.handleError( error, res ));
+      .execute(updateProductDto!)
+      .then(product => res.json(product))
+      .catch(error => this.handleError(error, res));
 
 
   }
@@ -86,8 +90,8 @@ export class ProductController {
   search = (req: Request, res: Response): any => {
 
     new SearchAllProducts(this.productRepository)
-    .execute()
-    .then( product => res.json( product ))
-    .catch( error => this.handleError( error, res ));
+      .execute()
+      .then(product => res.json(product))
+      .catch(error => this.handleError(error, res));
   }
 }
