@@ -19,9 +19,14 @@ const productSchema = new Schema({
         type: String,
         trim: true,
     }],
-    price: {
+    originalPrice: {
         type: Number,
         required: true,
+        min: [0, 'Original price cannot be negative'],
+    },
+    price: {
+        type: Number,
+        default: null,
         min: [0, 'Price cannot be negative'],
     },
     reviews: [{

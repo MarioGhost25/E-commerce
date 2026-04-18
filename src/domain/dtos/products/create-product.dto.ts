@@ -8,7 +8,8 @@ export class CreateProductDto {
 
     private constructor(
         public readonly name: string,
-        public readonly price: number,
+        public readonly originalPrice: number,
+        public readonly price: number | null,
         public readonly description: string,
         public readonly longDescription: string | null,
         public readonly category: string,
@@ -23,6 +24,7 @@ export class CreateProductDto {
     public static createProduct(object: { [key: string]: any }): [string?, CreateProductDto?] {
         const {
             name,
+            originalPrice,
             price,
             description,
             longDescription,
@@ -35,13 +37,14 @@ export class CreateProductDto {
             images,
         } = object;
 
-        let newPrice = price !== undefined ? Number(price) : price;
+        let newOriginalPrice = originalPrice !== undefined ? Number(originalPrice) : originalPrice;
+        let newPrice = price === null ? null : price !== undefined ? Number(price) : undefined;
         let stockNumber = stock !== undefined ? Number(stock) : stock;
         const normalizedLongDescription = longDescription;
 
         // 1. Required Fields Validation
         if (!name) return ["Missing name", undefined];
-        if (newPrice === undefined) return ["Missing price", undefined];
+        if (newOriginalPrice === undefined) return ["Missing originalPrice", undefined];
         if (!description) return ["Missing description", undefined];
         if (!category) return ["Missing category", undefined];
         if (stockNumber === undefined) return ["Missing stock", undefined];
@@ -64,8 +67,16 @@ export class CreateProductDto {
             }
         }
 
-        if (typeof newPrice !== 'number' || newPrice < 0) {
+        if (typeof newOriginalPrice !== 'number' || Number.isNaN(newOriginalPrice) || newOriginalPrice < 0) {
+            return ["Original price must be a non-negative number", undefined];
+        }
+
+        if (newPrice !== undefined && newPrice !== null && (typeof newPrice !== 'number' || Number.isNaN(newPrice) || newPrice < 0)) {
             return ["Price must be a non-negative number", undefined];
+        }
+
+        if (typeof newPrice === 'number' && newPrice > newOriginalPrice) {
+            return ["Price cannot be greater than original price", undefined];
         }
 
         if (typeof stockNumber !== 'number' || !Number.isInteger(stockNumber) || stockNumber < 0) {
@@ -85,7 +96,8 @@ export class CreateProductDto {
 
         return [undefined, new CreateProductDto(
             name,
-            newPrice,
+            newOriginalPrice,
+            newPrice ?? null,
             description,
             normalizedLongDescription ?? null,
             category,

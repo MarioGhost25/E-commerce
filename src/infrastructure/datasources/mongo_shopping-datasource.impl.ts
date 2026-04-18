@@ -25,10 +25,15 @@ export class MongoShoppingCartDatasourceImpl implements ShoppingCartDatasource {
                     throw CustomError.notFound(`Product not found: ${item.product}`);
                 }
 
+                const applicablePrice = productSchema.price ?? productSchema.originalPrice;
+                if (applicablePrice === null || applicablePrice === undefined) {
+                    throw CustomError.badRequest(`Product has no valid price: ${item.product}`);
+                }
+
                 productsFromDb.push({
                     product: item.product,
                     quantity: item.quantity,
-                    price: productSchema.price,
+                    price: applicablePrice,
                 });
             }
 
@@ -76,18 +81,23 @@ export class MongoShoppingCartDatasourceImpl implements ShoppingCartDatasource {
                     throw CustomError.notFound(`Product not found: ${item.product}`);
                 }
 
+                const applicablePrice = productSchema.price ?? productSchema.originalPrice;
+                if (applicablePrice === null || applicablePrice === undefined) {
+                    throw CustomError.badRequest(`Product has no valid price: ${item.product}`);
+                }
+
                 const existingItem = shoppingCart.products.find(
                     (cartItem: any) => cartItem.product.toString() === item.product
                 );
 
                 if (existingItem) {
                     existingItem.quantity += item.quantity;
-                    existingItem.price = productSchema.price;
+                    existingItem.price = applicablePrice;
                 } else {
                     shoppingCart.products.push({
                         product: item.product,
                         quantity: item.quantity,
-                        price: productSchema.price,
+                        price: applicablePrice,
                     });
                 }
             }
